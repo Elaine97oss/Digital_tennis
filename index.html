@@ -1,499 +1,303 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Digital Signage Lapangan Tennis Telkom</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              "sporty-blue": "#1e3a8a",
-              "sporty-dark": "#0f172a",
-              "sporty-light": "#3b82f6",
-              "tennis-green": "#10b981",
-              "tennis-ball": "#d9f99d",
-              "gelora-navy": "#213659",
-              "gelora-orange": "#f26925",
-              "gelora-teal": "#3c93b6",
-            },
-            fontFamily: {
-              sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-            },
-          },
-        },
-      };
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sporty-blue': '#1e3a8a', 
+                        'sporty-dark': '#0f172a',
+                        'sporty-light': '#3b82f6', 
+                        'tennis-green': '#10b981', 
+                        'tennis-ball': '#d9f99d',
+                        'gelora-navy': '#213659',
+                        'gelora-orange': '#f26925',
+                        'gelora-teal': '#3c93b6',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
     </script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
-      /* CSS RESET KHUSUS SMART TV */
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden !important;
-        background-color: #1e3a8a; /* Warna dasar diubah biru, mencegah bocor putih */
-        touch-action: none;
-      }
-
-      body {
-        font-family: "Inter", sans-serif;
-        position: absolute; /* Memaksa elemen menempel ke ujung absolut */
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      }
-
-      .screen {
-        width: 100%;
-        height: 100%;
-        transition: opacity 1.5s ease-in-out;
-      }
-
-      ::-webkit-scrollbar {
-        display: none;
-      }
-
-      .spin-slow {
-        animation: spin 30s linear infinite;
-      }
-      @keyframes spin {
-        from {
-          transform: rotate(0deg);
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden !important;
+            background-color: #1e3a8a; 
+            touch-action: none;
         }
-        to {
-          transform: rotate(360deg);
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            position: absolute; 
+            top: 0; left: 0; right: 0; bottom: 0;
         }
-      }
+        
+        .screen {
+            width: 100%;
+            height: 100%;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .spin-slow {
+            animation: spin 30s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
-  </head>
-  <body class="text-slate-800">
-    <div
-      id="screen-welcome"
-      class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-100 z-10 bg-sporty-blue overflow-hidden w-full h-full"
-    >
-      <div
-        class="absolute inset-0 z-0 opacity-20 pointer-events-none flex flex-col items-center justify-center w-full h-full"
-      >
-        <div
-          class="w-full h-full border-[16px] border-white max-w-[90%] max-h-[95%] absolute"
-        ></div>
-        <div
-          class="w-full h-2 bg-white absolute top-1/2 transform -translate-y-1/2 max-w-[90%]"
-        ></div>
-        <div
-          class="h-full w-2 bg-white absolute left-1/2 transform -translate-x-1/2 max-h-[95%]"
-        ></div>
-        <div
-          class="w-full h-full border-x-[16px] border-white max-w-[60%] max-h-[95%] absolute"
-        ></div>
-      </div>
+</head>
+<body class="text-slate-800">
 
-      <svg
-        class="absolute -bottom-32 -right-20 w-[450px] h-[450px] text-tennis-ball opacity-80 spin-slow drop-shadow-2xl"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM12 20.5C10.5 15 6.5 11 2.5 10.5C3.5 6 7 2.5 11.5 2.5C12 7.5 16.5 11.5 21.5 12C20.5 17 17 20 12 20.5Z"
-          stroke="white"
-          stroke-width="0.2"
-        />
-      </svg>
-
-      <div
-        class="relative z-10 flex flex-col items-center text-center w-[95%] max-w-[1400px]"
-      >
-        <div
-          class="mb-8 backdrop-blur-sm bg-sporty-dark/40 px-10 py-8 rounded-3xl border border-white/10 shadow-2xl w-full"
-        >
-          <p
-            class="text-2xl md:text-3xl lg:text-4xl font-bold text-tennis-ball mb-2 tracking-widest uppercase"
-          >
-            Selamat Datang di
-          </p>
-          <h1
-            class="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white drop-shadow-lg leading-tight"
-          >
-            Lapangan Tennis Indoor<br /><span
-              class="text-transparent bg-clip-text bg-gradient-to-r from-tennis-ball to-tennis-green"
-              >Telkom Makassar</span
-            >
-          </h1>
+    <!-- SLIDE 0: Layar Selamat Datang -->
+    <div id="screen-welcome" class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-100 z-10 bg-sporty-blue overflow-hidden w-full h-full">
+        
+        <div class="absolute inset-0 z-0 opacity-20 pointer-events-none flex flex-col items-center justify-center w-full h-full">
+            <div class="w-full h-full border-[16px] border-white max-w-[90%] max-h-[95%] absolute"></div>
+            <div class="w-full h-2 bg-white absolute top-1/2 transform -translate-y-1/2 max-w-[90%]"></div>
+            <div class="h-full w-2 bg-white absolute left-1/2 transform -translate-x-1/2 max-h-[95%]"></div>
+            <div class="w-full h-full border-x-[16px] border-white max-w-[60%] max-h-[95%] absolute"></div>
         </div>
 
-        <div
-          class="bg-white rounded-[2rem] shadow-2xl p-8 w-full flex flex-col items-center justify-center border-b-[12px] border-tennis-green"
-        >
-          <h3
-            class="text-xl lg:text-2xl font-black text-slate-400 uppercase tracking-widest mb-2"
-          >
-            Informasi Booking
-          </h3>
-          <p
-            class="text-3xl lg:text-4xl font-bold text-sporty-dark mb-8 leading-snug"
-          >
-            Untuk pemesanan lapangan, silakan melalui:
-          </p>
+        <svg class="absolute -bottom-32 -right-20 w-[450px] h-[450px] text-tennis-ball opacity-80 spin-slow drop-shadow-2xl" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM12 20.5C10.5 15 6.5 11 2.5 10.5C3.5 6 7 2.5 11.5 2.5C12 7.5 16.5 11.5 21.5 12C20.5 17 17 20 12 20.5Z" stroke="white" stroke-width="0.2"/>
+        </svg>
 
-          <div
-            class="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-5xl"
-          >
-            <div
-              class="flex flex-1 items-center justify-center space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-200"
-            >
-              <span
-                class="bg-gelora-orange text-white px-5 py-2 rounded-xl font-black text-2xl shadow-md"
-                >WEB</span
-              >
-              <p
-                class="text-4xl font-black text-gelora-navy underline decoration-gelora-orange decoration-4"
-              >
-                gelora.id
-              </p>
+        <div class="relative z-10 flex flex-col items-center text-center w-[95%] max-w-[1400px]">
+            
+            <div class="mb-8 backdrop-blur-sm bg-sporty-dark/40 px-10 py-8 rounded-3xl border border-white/10 shadow-2xl w-full">
+                <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-tennis-ball mb-2 tracking-widest uppercase">Selamat Datang di</p>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white drop-shadow-lg leading-tight">
+                    Lapangan Tennis Indoor<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-tennis-ball to-tennis-green">Telkom Makassar</span>
+                </h1>
             </div>
+            
+            <div class="bg-white rounded-[2rem] shadow-2xl p-8 w-full flex flex-col items-center justify-center border-b-[12px] border-tennis-green">
+                <h3 class="text-xl lg:text-2xl font-black text-slate-400 uppercase tracking-widest mb-2">Informasi Booking</h3>
+                <p class="text-3xl lg:text-4xl font-bold text-sporty-dark mb-8 leading-snug">Untuk pemesanan lapangan, silakan melalui:</p>
+                
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-5xl">
+                    <div class="flex flex-1 items-center justify-center space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <span class="bg-gelora-orange text-white px-5 py-2 rounded-xl font-black text-2xl shadow-md">WEB</span>
+                        <p class="text-4xl font-black text-gelora-navy underline decoration-gelora-orange decoration-4">gelora.id</p>
+                    </div>
 
-            <div
-              class="flex flex-1 items-center justify-center space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-200 relative overflow-hidden"
-            >
-              <div
-                class="absolute right-0 top-0 bottom-0 w-32 bg-gelora-teal opacity-10 skew-x-12 transform origin-bottom"
-              ></div>
-              <span
-                class="bg-gelora-teal text-white px-5 py-2 rounded-xl font-black text-2xl shadow-md z-10"
-                >APP</span
-              >
-              <div class="z-10 text-left">
-                <p class="text-3xl font-bold text-slate-700">
-                  Aplikasi
-                  <span class="text-gelora-navy font-black text-4xl"
-                    >GELORA</span
-                  >
-                </p>
-              </div>
+                    <div class="flex flex-1 items-center justify-center space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-200 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 bottom-0 w-32 bg-gelora-teal opacity-10 skew-x-12 transform origin-bottom"></div>
+                        <span class="bg-gelora-teal text-white px-5 py-2 rounded-xl font-black text-2xl shadow-md z-10">APP</span>
+                        <div class="z-10 text-left">
+                            <p class="text-3xl font-bold text-slate-700">Aplikasi <span class="text-gelora-navy font-black text-4xl">GELORA</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-lg font-bold text-slate-400 mt-6 tracking-widest uppercase">Dapat di-download di PlayStore & AppStore</p>
             </div>
-          </div>
-
-          <p
-            class="text-lg font-bold text-slate-400 mt-6 tracking-widest uppercase"
-          >
-            Dapat di-download di PlayStore & AppStore
-          </p>
         </div>
-      </div>
     </div>
 
-    <div
-      id="screen-jadwal-1"
-      class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-0 z-0 bg-slate-100 w-full h-full"
-    >
-      <div
-        class="bg-white shadow-2xl rounded-3xl p-6 md:p-8 w-full h-full flex flex-col border border-slate-200"
-      >
-        <div
-          class="mb-4 flex justify-between items-end border-b-4 border-slate-100 pb-3"
-        >
-          <div>
-            <h2
-              class="text-4xl md:text-5xl font-black text-sporty-blue tracking-tight"
-            >
-              Jadwal Lapangan
-              <span
-                class="text-2xl md:text-3xl text-sporty-light ml-2 bg-blue-50 px-4 py-1 rounded-lg"
-                >SESI PAGI - SIANG</span
-              >
-            </h2>
-            <p
-              class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest"
-            >
-              Indoor Tennis TELKOM
-            </p>
-          </div>
-          <div
-            class="bg-tennis-green text-white px-6 py-2 rounded-xl shadow-md text-2xl font-bold current-date-display"
-          >
-            Memuat...
-          </div>
+    <!-- SLIDE 1: Jadwal Sesi 1 -->
+    <div id="screen-jadwal-1" class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-0 z-0 bg-slate-100 w-full h-full">
+        <div class="bg-white shadow-2xl rounded-3xl p-6 md:p-8 w-full h-full flex flex-col border border-slate-200">
+            <div class="mb-4 flex justify-between items-end border-b-4 border-slate-100 pb-3">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-black text-sporty-blue tracking-tight">
+                        Jadwal Lapangan <span class="text-2xl md:text-3xl text-sporty-light ml-2 bg-blue-50 px-4 py-1 rounded-lg">SESI PAGI - SIANG</span>
+                    </h2>
+                    <p class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest">Indoor Tennis TELKOM</p>
+                </div>
+                <div class="bg-tennis-green text-white px-6 py-2 rounded-xl shadow-md text-2xl font-bold current-date-display">
+                    Memuat...
+                </div>
+            </div>
+            <div class="overflow-hidden flex-grow rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                <!-- Perbaikan: Menambahkan table-fixed dan membiarkan tabel membagi tinggi sendiri -->
+                <table class="w-full h-full text-left border-collapse text-xl table-fixed">
+                    <thead id="jadwal-head-1" class="bg-sporty-blue text-white text-center uppercase tracking-wider text-sm md:text-lg"></thead>
+                    <tbody id="jadwal-body-1" class="text-lg md:text-xl font-semibold bg-slate-50"></tbody>
+                </table>
+            </div>
         </div>
-        <div
-          class="overflow-hidden flex-grow rounded-2xl border border-slate-200 shadow-sm flex flex-col"
-        >
-          <table class="w-full text-left border-collapse text-xl h-full">
-            <thead
-              id="jadwal-head-1"
-              class="bg-sporty-blue text-white text-center uppercase tracking-wider text-sm md:text-lg h-[10%]"
-            ></thead>
-            <tbody
-              id="jadwal-body-1"
-              class="text-lg md:text-xl font-semibold bg-slate-50 h-[90%]"
-            ></tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
-    <div
-      id="screen-jadwal-2"
-      class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-0 z-0 bg-slate-100 w-full h-full"
-    >
-      <div
-        class="bg-white shadow-2xl rounded-3xl p-6 md:p-8 w-full h-full flex flex-col border border-slate-200"
-      >
-        <div
-          class="mb-4 flex justify-between items-end border-b-4 border-slate-100 pb-3"
-        >
-          <div>
-            <h2
-              class="text-4xl md:text-5xl font-black text-sporty-blue tracking-tight"
-            >
-              Jadwal Lapangan
-              <span
-                class="text-2xl md:text-3xl text-indigo-500 ml-2 bg-indigo-50 px-4 py-1 rounded-lg"
-                >SESI SORE - MALAM</span
-              >
-            </h2>
-            <p
-              class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest"
-            >
-              Indoor Tennis TELKOM
-            </p>
-          </div>
-          <div
-            class="bg-tennis-green text-white px-6 py-2 rounded-xl shadow-md text-2xl font-bold current-date-display"
-          >
-            Memuat...
-          </div>
+    <!-- SLIDE 2: Jadwal Sesi 2 -->
+    <div id="screen-jadwal-2" class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-0 z-0 bg-slate-100 w-full h-full">
+        <div class="bg-white shadow-2xl rounded-3xl p-6 md:p-8 w-full h-full flex flex-col border border-slate-200">
+            <div class="mb-4 flex justify-between items-end border-b-4 border-slate-100 pb-3">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-black text-sporty-blue tracking-tight">
+                        Jadwal Lapangan <span class="text-2xl md:text-3xl text-indigo-500 ml-2 bg-indigo-50 px-4 py-1 rounded-lg">SESI SORE - MALAM</span>
+                    </h2>
+                    <p class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest">Indoor Tennis TELKOM</p>
+                </div>
+                <div class="bg-tennis-green text-white px-6 py-2 rounded-xl shadow-md text-2xl font-bold current-date-display">
+                    Memuat...
+                </div>
+            </div>
+            <div class="overflow-hidden flex-grow rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                <!-- Perbaikan: Menambahkan table-fixed dan membiarkan tabel membagi tinggi sendiri -->
+                <table class="w-full h-full text-left border-collapse text-xl table-fixed">
+                    <thead id="jadwal-head-2" class="bg-sporty-blue text-white text-center uppercase tracking-wider text-sm md:text-lg"></thead>
+                    <tbody id="jadwal-body-2" class="text-lg md:text-xl font-semibold bg-slate-50"></tbody>
+                </table>
+            </div>
         </div>
-        <div
-          class="overflow-hidden flex-grow rounded-2xl border border-slate-200 shadow-sm flex flex-col"
-        >
-          <table class="w-full text-left border-collapse text-xl h-full">
-            <thead
-              id="jadwal-head-2"
-              class="bg-sporty-blue text-white text-center uppercase tracking-wider text-sm md:text-lg h-[10%]"
-            ></thead>
-            <tbody
-              id="jadwal-body-2"
-              class="text-lg md:text-xl font-semibold bg-slate-50 h-[90%]"
-            ></tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
     <script>
-      const GAS_API_URL =
-        "https://script.google.com/macros/s/AKfycbzpTVIM5S8FP38lpFUF4MO_Kbhc08jHxNdnGkULvEVmd0WUdNQFQTV3GY330cBJOiri/exec";
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzpTVIM5S8FP38lpFUF4MO_Kbhc08jHxNdnGkULvEVmd0WUdNQFQTV3GY330cBJOiri/exec";
+        
+        let currentScreenIndex = 0;
+        const screens = [
+            document.getElementById('screen-welcome'),
+            document.getElementById('screen-jadwal-1'),
+            document.getElementById('screen-jadwal-2')
+        ];
 
-      let currentScreenIndex = 0;
-      const screens = [
-        document.getElementById("screen-welcome"),
-        document.getElementById("screen-jadwal-1"),
-        document.getElementById("screen-jadwal-2"),
-      ];
+        const jamSesi1 = [
+            "06:00 - 07:00", "07:00 - 08:00", "08:00 - 09:00", "09:00 - 10:00",
+            "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00",
+            "14:00 - 15:00"
+        ];
+        const jamSesi2 = [
+            "15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00", "18:00 - 19:00", 
+            "19:00 - 20:00", "20:00 - 21:00", "21:00 - 22:00", "22:00 - 23:00"
+        ];
 
-      const jamSesi1 = [
-        "06:00 - 07:00",
-        "07:00 - 08:00",
-        "08:00 - 09:00",
-        "09:00 - 10:00",
-        "10:00 - 11:00",
-        "11:00 - 12:00",
-        "12:00 - 13:00",
-        "13:00 - 14:00",
-        "14:00 - 15:00",
-      ];
-      const jamSesi2 = [
-        "15:00 - 16:00",
-        "16:00 - 17:00",
-        "17:00 - 18:00",
-        "18:00 - 19:00",
-        "19:00 - 20:00",
-        "20:00 - 21:00",
-        "21:00 - 22:00",
-        "22:00 - 23:00",
-      ];
+        const colorPalette = ['bg-sporty-light', 'bg-tennis-green', 'bg-teal-500', 'bg-indigo-500', 'bg-orange-500', 'bg-rose-500'];
+        let pemesanColors = {};
+        let colorIndex = 0;
 
-      const colorPalette = [
-        "bg-sporty-light",
-        "bg-tennis-green",
-        "bg-teal-500",
-        "bg-indigo-500",
-        "bg-orange-500",
-        "bg-rose-500",
-      ];
-      let pemesanColors = {};
-      let colorIndex = 0;
-
-      document.body.addEventListener("dblclick", function () {
-        if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch((err) => {
-            console.log(`Error: ${err.message}`);
-          });
-        } else {
-          document.exitFullscreen();
-        }
-      });
-
-      function updateDateHeader() {
-        const options = {
-          weekday: "long",
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        };
-        const dateText = new Date().toLocaleDateString("en-GB", options);
-        document
-          .querySelectorAll(".current-date-display")
-          .forEach((el) => (el.innerText = dateText));
-      }
-
-      function rotateScreens() {
-        screens.forEach((screen) => {
-          screen.classList.replace("opacity-100", "opacity-0");
-          screen.classList.replace("z-10", "z-0");
-        });
-        currentScreenIndex = (currentScreenIndex + 1) % screens.length;
-        screens[currentScreenIndex].classList.replace(
-          "opacity-0",
-          "opacity-100",
-        );
-        screens[currentScreenIndex].classList.replace("z-0", "z-10");
-      }
-
-      async function fetchJadwal() {
-        try {
-          const response = await fetch(GAS_API_URL);
-          const data = await response.json();
-
-          const today = new Date();
-          const yyyy = today.getFullYear();
-          const mm = String(today.getMonth() + 1).padStart(2, "0");
-          const dd = String(today.getDate()).padStart(2, "0");
-          const dateString = `${yyyy}-${mm}-${dd}`;
-
-          const filteredData = data.filter((item) => {
-            if (!item["Tanggal"]) return true;
-            return String(item["Tanggal"]).substring(0, 10) === dateString;
-          });
-
-          let courts = [
-            ...new Set(data.map((item) => item["Nama Lapangan"])),
-          ].filter(Boolean);
-          if (courts.length === 0) {
-            courts = [
-              "Lapangan Tennis Indoor 1",
-              "Lapangan Tennis Indoor 2",
-              "Lapangan Tennis Indoor 3",
-              "Lapangan Tennis Indoor 4",
-            ];
-          }
-
-          renderMatrixTable(
-            filteredData,
-            courts,
-            jamSesi1,
-            "jadwal-head-1",
-            "jadwal-body-1",
-          );
-          renderMatrixTable(
-            filteredData,
-            courts,
-            jamSesi2,
-            "jadwal-head-2",
-            "jadwal-body-2",
-          );
-        } catch (error) {
-          console.error("Gagal menarik data jadwal:", error);
-        }
-      }
-
-      function renderMatrixTable(
-        filteredData,
-        courts,
-        jamArray,
-        headId,
-        bodyId,
-      ) {
-        const matrix = {};
-        jamArray.forEach((t) => {
-          matrix[t] = {};
-          courts.forEach((c) => (matrix[t][c] = null));
-        });
-
-        filteredData.forEach((item) => {
-          if (
-            matrix[item["Waktu"]] &&
-            matrix[item["Waktu"]][item["Nama Lapangan"]] !== undefined
-          ) {
-            matrix[item["Waktu"]][item["Nama Lapangan"]] = item;
-          }
-        });
-
-        let headHTML =
-          '<tr><th class="p-3 border-r border-blue-800 text-center w-48 py-4">WAKTU</th>';
-        courts.forEach((court) => {
-          const shortCourt = court.replace("Lapangan Tennis ", "");
-          headHTML += `<th class="p-3 border-r border-blue-800 text-center py-4">${shortCourt}</th>`;
-        });
-        headHTML += "</tr>";
-        document.getElementById(headId).innerHTML = headHTML;
-
-        const bodyEl = document.getElementById(bodyId);
-        bodyEl.innerHTML = "";
-
-        jamArray.forEach((time) => {
-          const tr = document.createElement("tr");
-          tr.className =
-            "border-b border-slate-200 transition-colors hover:bg-slate-100 h-full";
-
-          let rowHTML = `<td class="p-2 border-r border-slate-200 bg-white text-center font-bold text-slate-500">${time}</td>`;
-
-          courts.forEach((court) => {
-            const cellData = matrix[time][court];
-
-            if (
-              cellData &&
-              cellData["Status"] === "Terbooking" &&
-              cellData["Nama Pemesan"] !== "-"
-            ) {
-              const nama = cellData["Nama Pemesan"];
-
-              if (!pemesanColors[nama]) {
-                pemesanColors[nama] =
-                  colorPalette[colorIndex % colorPalette.length];
-                colorIndex++;
-              }
-              const bgColor = pemesanColors[nama];
-
-              rowHTML += `<td class="p-2 border-r border-slate-200 ${bgColor} text-center font-bold text-white uppercase shadow-inner">${nama}</td>`;
+        document.body.addEventListener('dblclick', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error: ${err.message}`);
+                });
             } else {
-              rowHTML += `<td class="p-2 border-r border-slate-200 bg-transparent text-center text-slate-300 text-sm">Tersedia</td>`;
+                document.exitFullscreen();
             }
-          });
-
-          tr.innerHTML = rowHTML;
-          bodyEl.appendChild(tr);
         });
-      }
 
-      updateDateHeader();
-      fetchJadwal();
+        function updateDateHeader() {
+            const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+            const dateText = new Date().toLocaleDateString('en-GB', options);
+            document.querySelectorAll('.current-date-display').forEach(el => el.innerText = dateText);
+        }
 
-      setInterval(rotateScreens, 12000);
-      setInterval(fetchJadwal, 300000);
+        function rotateScreens() {
+            screens.forEach(screen => {
+                screen.classList.replace('opacity-100', 'opacity-0');
+                screen.classList.replace('z-10', 'z-0');
+            });
+            currentScreenIndex = (currentScreenIndex + 1) % screens.length;
+            screens[currentScreenIndex].classList.replace('opacity-0', 'opacity-100');
+            screens[currentScreenIndex].classList.replace('z-0', 'z-10');
+        }
+
+        async function fetchJadwal() {
+            try {
+                const response = await fetch(GAS_API_URL);
+                const data = await response.json();
+                
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const dateString = `${yyyy}-${mm}-${dd}`; 
+                
+                const filteredData = data.filter(item => {
+                    if (!item['Tanggal']) return true; 
+                    return String(item['Tanggal']).substring(0, 10) === dateString;
+                });
+
+                let courts = [...new Set(data.map(item => item['Nama Lapangan']))].filter(Boolean);
+                if (courts.length === 0) {
+                    courts = ["Lapangan Tennis Indoor 1", "Lapangan Tennis Indoor 2", "Lapangan Tennis Indoor 3", "Lapangan Tennis Indoor 4"];
+                }
+
+                renderMatrixTable(filteredData, courts, jamSesi1, 'jadwal-head-1', 'jadwal-body-1');
+                renderMatrixTable(filteredData, courts, jamSesi2, 'jadwal-head-2', 'jadwal-body-2');
+                
+            } catch (error) {
+                console.error('Gagal menarik data jadwal:', error);
+            }
+        }
+
+        function renderMatrixTable(filteredData, courts, jamArray, headId, bodyId) {
+            const matrix = {};
+            jamArray.forEach(t => {
+                matrix[t] = {};
+                courts.forEach(c => matrix[t][c] = null);
+            });
+
+            filteredData.forEach(item => {
+                if(matrix[item['Waktu']] && matrix[item['Waktu']][item['Nama Lapangan']] !== undefined) {
+                    matrix[item['Waktu']][item['Nama Lapangan']] = item;
+                }
+            });
+
+            let headHTML = '<tr><th class="p-3 border-r border-blue-800 text-center w-32 md:w-48 py-4">WAKTU</th>';
+            courts.forEach(court => {
+                const shortCourt = court.replace('Lapangan Tennis ', '');
+                headHTML += `<th class="p-3 border-r border-blue-800 text-center py-4">${shortCourt}</th>`;
+            });
+            headHTML += '</tr>';
+            document.getElementById(headId).innerHTML = headHTML;
+
+            const bodyEl = document.getElementById(bodyId);
+            bodyEl.innerHTML = '';
+
+            jamArray.forEach(time => {
+                const tr = document.createElement('tr');
+                // Perbaikan: Class h-full dihapus dari sini agar tinggi baris terbagi rata
+                tr.className = 'border-b border-slate-200 transition-colors hover:bg-slate-100';
+
+                let rowHTML = `<td class="p-2 md:p-3 border-r border-slate-200 bg-white text-center font-bold text-slate-500">${time}</td>`;
+
+                courts.forEach(court => {
+                    const cellData = matrix[time][court];
+                    
+                    if (cellData && cellData['Status'] === 'Terbooking' && cellData['Nama Pemesan'] !== '-') {
+                        const nama = cellData['Nama Pemesan'];
+                        
+                        if(!pemesanColors[nama]) {
+                            pemesanColors[nama] = colorPalette[colorIndex % colorPalette.length];
+                            colorIndex++;
+                        }
+                        const bgColor = pemesanColors[nama];
+
+                        rowHTML += `<td class="p-2 md:p-3 border-r border-slate-200 ${bgColor} text-center font-bold text-white uppercase shadow-inner">${nama}</td>`;
+                    } else {
+                        rowHTML += `<td class="p-2 md:p-3 border-r border-slate-200 bg-transparent text-center text-slate-300 text-sm">Tersedia</td>`;
+                    }
+                });
+
+                tr.innerHTML = rowHTML;
+                bodyEl.appendChild(tr);
+            });
+        }
+
+        updateDateHeader();
+        fetchJadwal();
+        
+        setInterval(rotateScreens, 12000); 
+        setInterval(fetchJadwal, 300000);  
     </script>
-  </body>
+</body>
 </html>
