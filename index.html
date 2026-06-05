@@ -2,39 +2,25 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
     <title>Digital Signage Lapangan Tennis Telkom</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@400;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --court-green: #1a3a2a;
+        --court-green:     #1a3a2a;
         --court-green-mid: #1f4a35;
-        --accent-gold: #c9a84c;
-        --accent-gold-light: #e8c96e;
-        --tennis-ball: #cfe04a;
-        --cream: #f5f0e8;
-        --dark: #0d1f16;
-        --text-muted: rgba(245, 240, 232, 0.55);
+        --accent-gold:     #c9a84c;
+        --accent-gold-lt:  #e8c96e;
+        --tennis-ball:     #cfe04a;
+        --cream:           #f5f0e8;
+        --dark:            #0d1f16;
+        --text-muted:      rgba(245,240,232,0.55);
       }
 
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      html,
-      body {
-        width: 100%;
-        height: 100%;
+      html, body {
+        width: 1920px; height: 1080px;   /* fixed 1080p — no fluid layout */
         overflow: hidden;
         background: var(--dark);
         touch-action: none;
@@ -42,549 +28,328 @@
       }
 
       body {
-        font-family: "Barlow", sans-serif;
-        position: absolute;
-        inset: 0;
-      }
-      ::-webkit-scrollbar {
-        display: none;
+        font-family: 'Barlow', Arial, sans-serif;
+        position: absolute; inset: 0;
       }
 
-      /* ── SCREEN SYSTEM ─────────────────────────────────────── */
+      ::-webkit-scrollbar { display: none; }
+
+      /* ── SCREEN SYSTEM ─────────────────────────────── */
       .screen {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        inset: 0;
+        width: 1920px; height: 1080px;
+        position: absolute; top: 0; left: 0;
         opacity: 0;
         z-index: 0;
-        transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-transition: opacity 1.8s ease;
+        transition: opacity 1.8s ease;
       }
-      .screen.active {
-        opacity: 1;
-        z-index: 10;
-      }
+      .screen.active { opacity: 1; z-index: 10; }
 
-      /* ── WELCOME ────────────────────────────────────────────── */
+      /* ── WELCOME ───────────────────────────────────── */
       #screen-welcome {
         background: var(--court-green);
+        display: -webkit-flex;
         display: flex;
+        -webkit-align-items: center;
         align-items: center;
+        -webkit-justify-content: center;
         justify-content: center;
         overflow: hidden;
       }
 
       .court-texture {
-        position: absolute;
-        inset: 0;
+        position: absolute; top:0;left:0;right:0;bottom:0;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='1' cy='1' r='0.5' fill='rgba(255,255,255,0.04)'/%3E%3Ccircle cx='3' cy='3' r='0.5' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
-        z-index: 0;
-        pointer-events: none;
+        z-index: 0; pointer-events: none;
       }
-
       .court-lines {
-        position: absolute;
-        inset: 0;
-        z-index: 1;
-        pointer-events: none;
+        position: absolute; top:0;left:0;right:0;bottom:0;
+        z-index: 1; pointer-events: none;
       }
-      .court-lines svg {
-        width: 100%;
-        height: 100%;
-      }
-
+      .court-lines svg { width: 1920px; height: 1080px; }
       .court-overlay {
-        position: absolute;
-        inset: 0;
-        z-index: 2;
+        position: absolute; top:0;left:0;right:0;bottom:0; z-index: 2;
         pointer-events: none;
-        background: radial-gradient(
-          ellipse at 50% 50%,
-          rgba(31, 74, 53, 0.3) 0%,
-          rgba(13, 31, 22, 0.75) 100%
-        );
+        background: -webkit-radial-gradient(center, ellipse, rgba(31,74,53,0.3) 0%, rgba(13,31,22,0.75) 100%);
+        background: radial-gradient(ellipse at center, rgba(31,74,53,0.3) 0%, rgba(13,31,22,0.75) 100%);
       }
 
+      /* floating balls */
       .ball-float {
-        position: absolute;
-        border-radius: 50%;
-        background: radial-gradient(
-          circle at 35% 35%,
-          var(--tennis-ball),
-          #a0b830
-        );
-        box-shadow:
-          0 0 60px rgba(207, 224, 74, 0.25),
-          inset -6px -6px 16px rgba(0, 0, 0, 0.2);
+        position: absolute; border-radius: 50%;
+        background: -webkit-radial-gradient(35% 35%, circle, #cfe04a, #a0b830);
+        background: radial-gradient(circle at 35% 35%, #cfe04a, #a0b830);
+        box-shadow: 0 0 60px rgba(207,224,74,0.25);
+        -webkit-animation: floatBall 8s ease-in-out infinite;
         animation: floatBall 8s ease-in-out infinite;
-        z-index: 3;
-        pointer-events: none;
+        z-index: 3; pointer-events: none;
       }
       .ball-float::before {
-        content: "";
-        position: absolute;
-        inset: 0;
+        content: ''; position: absolute; top:0;left:0;right:0;bottom:0;
         border-radius: 50%;
-        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M2 50 Q25 15 50 50 Q75 85 98 50' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2.5'/%3E%3Cpath d='M2 50 Q25 85 50 50 Q75 15 98 50' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2.5'/%3E%3C/svg%3E")
-          center/contain no-repeat;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M2 50 Q25 15 50 50 Q75 85 98 50' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2.5'/%3E%3Cpath d='M2 50 Q25 85 50 50 Q75 15 98 50' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2.5'/%3E%3C/svg%3E") center/contain no-repeat;
       }
-      .ball-a {
-        width: 300px;
-        height: 300px;
-        bottom: -60px;
-        right: 4%;
-        opacity: 0.15;
-        animation-duration: 20s;
-      }
-      .ball-b {
-        width: 70px;
-        height: 70px;
-        bottom: 18%;
-        left: 7%;
-        opacity: 0.55;
-        animation-duration: 11s;
-        animation-delay: -3s;
-      }
-      .ball-c {
-        width: 44px;
-        height: 44px;
-        top: 10%;
-        right: 20%;
-        opacity: 0.4;
-        animation-duration: 14s;
-        animation-delay: -7s;
-      }
+      .ball-a { width:300px;height:300px; bottom:-60px;right:4%; opacity:.15; -webkit-animation-duration:20s; animation-duration:20s; }
+      .ball-b { width:70px; height:70px;  bottom:18%;left:7%;  opacity:.55; -webkit-animation-duration:11s; animation-duration:11s; -webkit-animation-delay:-3s; animation-delay:-3s; }
+      .ball-c { width:44px; height:44px;  top:10%;right:20%;   opacity:.4;  -webkit-animation-duration:14s; animation-duration:14s; -webkit-animation-delay:-7s; animation-delay:-7s; }
 
+      @-webkit-keyframes floatBall {
+        0%,100% { -webkit-transform:translateY(0) rotate(0deg);   transform:translateY(0) rotate(0deg); }
+        25%      { -webkit-transform:translateY(-22px) rotate(45deg); transform:translateY(-22px) rotate(45deg); }
+        75%      { -webkit-transform:translateY(10px) rotate(-30deg); transform:translateY(10px) rotate(-30deg); }
+      }
       @keyframes floatBall {
-        0%,
-        100% {
-          transform: translateY(0) rotate(0deg);
-        }
-        25% {
-          transform: translateY(-22px) rotate(45deg);
-        }
-        75% {
-          transform: translateY(10px) rotate(-30deg);
-        }
+        0%,100% { transform:translateY(0) rotate(0deg); }
+        25%      { transform:translateY(-22px) rotate(45deg); }
+        75%      { transform:translateY(10px) rotate(-30deg); }
       }
 
+      /* welcome layout — fixed px sizes for TV */
       .welcome-content {
-        position: relative;
-        z-index: 10;
-        width: 95%;
-        max-width: 1400px;
-        display: flex;
-        flex-direction: column;
-        gap: 1.8rem;
-        align-items: center;
+        position: relative; z-index: 10;
+        width: 1400px;
+        display: -webkit-flex; display: flex;
+        -webkit-flex-direction: column; flex-direction: column;
+        gap: 28px;
+        -webkit-align-items: center; align-items: center;
       }
 
       .welcome-badge {
-        display: flex;
-        align-items: center;
+        display: -webkit-flex; display: flex;
+        -webkit-align-items: center; align-items: center;
         gap: 10px;
-        background: rgba(201, 168, 76, 0.12);
-        border: 1px solid rgba(201, 168, 76, 0.38);
-        padding: 8px 22px;
-        border-radius: 50px;
+        background: rgba(201,168,76,0.12);
+        border: 1px solid rgba(201,168,76,0.38);
+        padding: 10px 26px; border-radius: 50px;
       }
       .badge-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
+        width: 9px; height: 9px; border-radius: 50%;
         background: var(--accent-gold);
-        animation: pulse 2s infinite;
+        -webkit-animation: pulse 2s infinite; animation: pulse 2s infinite;
+      }
+      @-webkit-keyframes pulse {
+        0%,100%{opacity:1;-webkit-transform:scale(1);} 50%{opacity:.5;-webkit-transform:scale(1.5);}
       }
       @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.5;
-          transform: scale(1.5);
-        }
+        0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(1.5);}
       }
       .welcome-badge span {
-        font-family: "Barlow Condensed", sans-serif;
-        font-weight: 700;
-        font-size: 1rem;
-        letter-spacing: 0.2em;
-        color: var(--accent-gold-light);
+        font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
+        font-weight: 700; font-size: 20px;
+        letter-spacing: 0.22em; color: var(--accent-gold-lt);
         text-transform: uppercase;
       }
 
-      .welcome-hero {
-        text-align: center;
-      }
+      .welcome-hero { text-align: center; }
       .welcome-subtitle {
-        font-family: "Barlow Condensed", sans-serif;
-        font-weight: 600;
-        font-size: clamp(1rem, 2vw, 1.5rem);
-        color: var(--accent-gold-light);
-        letter-spacing: 0.35em;
-        text-transform: uppercase;
-        margin-bottom: 0.4rem;
-        opacity: 0.9;
+        font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
+        font-weight: 600; font-size: 28px;
+        color: var(--accent-gold-lt); letter-spacing: 0.35em;
+        text-transform: uppercase; margin-bottom: 6px; opacity: 0.9;
       }
       .welcome-title {
-        font-family: "Bebas Neue", cursive;
-        font-size: clamp(3.8rem, 9vw, 9rem);
-        line-height: 0.92;
-        color: var(--cream);
-        letter-spacing: 0.03em;
-        text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+        font-family: 'Bebas Neue', Impact, sans-serif;
+        font-size: 130px; line-height: 0.92;
+        color: var(--cream); letter-spacing: 0.03em;
+        text-shadow: 0 4px 40px rgba(0,0,0,0.4);
       }
-      .welcome-title .highlight {
-        color: var(--tennis-ball);
-        display: block;
-      }
+      .welcome-title .highlight { color: var(--tennis-ball); display: block; }
       .welcome-divider {
-        width: 120px;
-        height: 3px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--accent-gold),
-          transparent
-        );
-        margin: 1rem auto 0;
+        width: 120px; height: 3px;
+        background: -webkit-linear-gradient(left, transparent, #c9a84c, transparent);
+        background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+        margin: 14px auto 0;
       }
 
+      /* booking card — NO backdrop-filter (not supported on LG) */
       .booking-card {
-        background: rgba(13, 31, 22, 0.72);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(201, 168, 76, 0.22);
+        background: rgba(13,31,22,0.88);
+        border: 1px solid rgba(201,168,76,0.22);
         border-radius: 22px;
-        padding: 1.8rem 2.2rem;
+        padding: 28px 36px;
         width: 100%;
       }
       .booking-label {
-        font-family: "Barlow Condensed", sans-serif;
-        font-weight: 700;
-        font-size: clamp(0.75rem, 1.1vw, 0.95rem);
-        letter-spacing: 0.3em;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        text-align: center;
-        margin-bottom: 1rem;
+        font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
+        font-weight: 700; font-size: 18px;
+        letter-spacing: 0.3em; color: var(--text-muted);
+        text-transform: uppercase; text-align: center; margin-bottom: 14px;
       }
       .booking-desc {
-        font-weight: 600;
-        font-size: clamp(1.2rem, 2.3vw, 1.8rem);
-        color: var(--cream);
-        text-align: center;
-        margin-bottom: 1.4rem;
-        opacity: 0.9;
+        font-weight: 600; font-size: 30px;
+        color: var(--cream); text-align: center; margin-bottom: 20px; opacity: 0.9;
       }
       .booking-channels {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
+        display: -webkit-flex; display: flex;
+        gap: 16px; -webkit-justify-content: center; justify-content: center;
       }
       .channel-pill {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        background: rgba(245, 240, 232, 0.05);
-        border: 1px solid rgba(245, 240, 232, 0.1);
-        border-radius: 14px;
-        padding: 1rem 1.6rem;
-        flex: 1;
-        min-width: 260px;
-        max-width: 420px;
+        display: -webkit-flex; display: flex;
+        -webkit-align-items: center; align-items: center;
+        gap: 16px;
+        background: rgba(245,240,232,0.05);
+        border: 1px solid rgba(245,240,232,0.1);
+        border-radius: 14px; padding: 16px 28px;
+        width: 560px;
       }
       .channel-tag {
-        font-family: "Bebas Neue", cursive;
-        font-size: 1.05rem;
-        letter-spacing: 0.1em;
-        padding: 6px 14px;
-        border-radius: 8px;
-        flex-shrink: 0;
+        font-family: 'Bebas Neue', Impact, sans-serif;
+        font-size: 22px; letter-spacing: 0.1em;
+        padding: 7px 16px; border-radius: 8px; -webkit-flex-shrink: 0; flex-shrink: 0;
       }
-      .tag-web {
-        background: var(--accent-gold);
-        color: var(--dark);
-      }
-      .tag-app {
-        background: #2ecc8a;
-        color: var(--dark);
-      }
+      .tag-web { background: var(--accent-gold); color: var(--dark); }
+      .tag-app { background: #2ecc8a; color: var(--dark); }
       .channel-name {
-        font-family: "Bebas Neue", cursive;
-        font-size: clamp(1.6rem, 3vw, 2.3rem);
-        color: var(--cream);
-        letter-spacing: 0.05em;
-        line-height: 1;
+        font-family: 'Bebas Neue', Impact, sans-serif;
+        font-size: 44px; color: var(--cream);
+        letter-spacing: 0.05em; line-height: 1;
       }
       .channel-name small {
-        display: block;
-        font-family: "Barlow", sans-serif;
-        font-size: 0.72rem;
-        font-weight: 500;
-        letter-spacing: 0.1em;
-        opacity: 0.5;
-        text-transform: uppercase;
-        margin-top: 2px;
+        display: block; font-family: 'Barlow', Arial, sans-serif;
+        font-size: 14px; font-weight: 500; letter-spacing: 0.1em;
+        opacity: 0.5; text-transform: uppercase; margin-top: 3px;
       }
 
-      /* ── SCHEDULE SLIDES ────────────────────────────────────── */
+      /* ── SCHEDULE SLIDES ──────────────────────────── */
       .screen-jadwal {
         background: var(--dark);
-        display: flex;
-        flex-direction: column;
-        padding: 1.4rem 2rem;
-        overflow: hidden;
+        display: -webkit-flex; display: flex;
+        -webkit-flex-direction: column; flex-direction: column;
+        padding: 32px 40px; overflow: hidden;
       }
 
       .jadwal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        flex-shrink: 0;
+        display: -webkit-flex; display: flex;
+        -webkit-justify-content: space-between; justify-content: space-between;
+        -webkit-align-items: center; align-items: center;
+        margin-bottom: 16px; -webkit-flex-shrink: 0; flex-shrink: 0;
       }
       .jadwal-eyebrow {
-        font-family: "Barlow Condensed", sans-serif;
-        font-weight: 700;
-        font-size: clamp(0.65rem, 1vw, 0.88rem);
-        letter-spacing: 0.35em;
-        color: var(--accent-gold);
+        font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
+        font-weight: 700; font-size: 18px;
+        letter-spacing: 0.35em; color: var(--accent-gold);
         text-transform: uppercase;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        display: -webkit-flex; display: flex;
+        -webkit-align-items: center; align-items: center; gap: 10px;
       }
       .jadwal-eyebrow::before {
-        content: "";
-        display: inline-block;
-        width: 26px;
-        height: 2px;
+        content: ''; display: inline-block; width: 28px; height: 2px;
         background: var(--accent-gold);
       }
       .jadwal-title {
-        font-family: "Bebas Neue", cursive;
-        font-size: clamp(2.6rem, 5.5vw, 4.8rem);
-        color: var(--cream);
-        letter-spacing: 0.04em;
-        line-height: 1;
+        font-family: 'Bebas Neue', Impact, sans-serif;
+        font-size: 72px; color: var(--cream);
+        letter-spacing: 0.04em; line-height: 1;
       }
       .sesi-tag {
-        font-family: "Barlow Condensed", sans-serif;
-        font-weight: 800;
-        font-size: clamp(0.9rem, 1.7vw, 1.4rem);
-        letter-spacing: 0.12em;
-        vertical-align: middle;
-        padding: 4px 14px;
-        border-radius: 6px;
-        margin-left: 12px;
+        font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
+        font-weight: 800; font-size: 24px;
+        letter-spacing: 0.12em; vertical-align: middle;
+        padding: 5px 16px; border-radius: 6px; margin-left: 14px;
       }
-      .sesi-pagi {
-        background: rgba(201, 168, 76, 0.18);
-        color: var(--accent-gold-light);
-        border: 1px solid rgba(201, 168, 76, 0.35);
-      }
-      .sesi-sore {
-        background: rgba(46, 204, 138, 0.14);
-        color: #5de8a8;
-        border: 1px solid rgba(46, 204, 138, 0.3);
-      }
+      .sesi-pagi { background: rgba(201,168,76,0.18); color: var(--accent-gold-lt); border: 1px solid rgba(201,168,76,0.35); }
+      .sesi-sore { background: rgba(46,204,138,0.14); color: #5de8a8; border: 1px solid rgba(46,204,138,0.3); }
 
       .jadwal-date-badge {
-        font-family: "Barlow Condensed", sans-serif;
-        font-weight: 700;
-        font-size: clamp(0.95rem, 1.7vw, 1.45rem);
-        letter-spacing: 0.08em;
-        color: var(--cream);
-        background: rgba(245, 240, 232, 0.06);
-        border: 1px solid rgba(245, 240, 232, 0.11);
-        padding: 10px 20px;
-        border-radius: 12px;
-        text-transform: uppercase;
-        white-space: nowrap;
+        font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
+        font-weight: 700; font-size: 26px;
+        letter-spacing: 0.08em; color: var(--cream);
+        background: rgba(245,240,232,0.07);
+        border: 1px solid rgba(245,240,232,0.11);
+        padding: 12px 24px; border-radius: 12px;
+        text-transform: uppercase; white-space: nowrap;
       }
       .header-divider {
-        width: 100%;
-        height: 1px;
-        flex-shrink: 0;
-        background: linear-gradient(
-          90deg,
-          var(--accent-gold) 0%,
-          rgba(201, 168, 76, 0.15) 35%,
-          transparent 100%
-        );
-        margin-bottom: 1rem;
+        width: 100%; height: 1px; -webkit-flex-shrink: 0; flex-shrink: 0;
+        background: -webkit-linear-gradient(left, #c9a84c 0%, rgba(201,168,76,0.15) 35%, transparent 100%);
+        background: linear-gradient(90deg, #c9a84c 0%, rgba(201,168,76,0.15) 35%, transparent 100%);
+        margin-bottom: 16px;
       }
 
       .table-wrap {
-        flex: 1;
-        overflow: hidden;
+        -webkit-flex: 1; flex: 1; overflow: hidden;
         border-radius: 14px;
-        border: 1px solid rgba(245, 240, 232, 0.07);
-        display: flex;
-        flex-direction: column;
+        border: 1px solid rgba(245,240,232,0.07);
+        display: -webkit-flex; display: flex;
+        -webkit-flex-direction: column; flex-direction: column;
       }
 
       table.jadwal-table {
-        width: 100%;
-        height: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-        font-family: "Barlow", sans-serif;
+        width: 100%; height: 100%;
+        border-collapse: collapse; table-layout: fixed;
+        font-family: 'Barlow', Arial, sans-serif;
       }
       table.jadwal-table thead {
-        background: linear-gradient(
-          135deg,
-          var(--court-green-mid),
-          var(--court-green)
-        );
+        background: -webkit-linear-gradient(135deg, #1f4a35, #1a3a2a);
+        background: linear-gradient(135deg, #1f4a35, #1a3a2a);
       }
       table.jadwal-table thead th {
-        padding: 13px 10px;
-        font-family: "Barlow Condensed", sans-serif;
-        font-weight: 700;
-        font-size: clamp(0.75rem, 1.15vw, 1.05rem);
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: var(--cream);
-        text-align: center;
-        border-right: 1px solid rgba(245, 240, 232, 0.08);
+        padding: 16px 10px;
+        font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
+        font-weight: 700; font-size: 20px;
+        letter-spacing: 0.15em; text-transform: uppercase;
+        color: var(--cream); text-align: center;
+        border-right: 1px solid rgba(245,240,232,0.08);
       }
       table.jadwal-table thead th:first-child {
-        color: var(--accent-gold-light);
-        width: 145px;
+        color: var(--accent-gold-lt); width: 180px;
       }
       table.jadwal-table tbody tr {
-        border-bottom: 1px solid rgba(245, 240, 232, 0.05);
+        border-bottom: 1px solid rgba(245,240,232,0.05);
       }
       table.jadwal-table tbody tr:nth-child(even) {
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(255,255,255,0.02);
       }
       table.jadwal-table tbody td {
-        padding: 9px 8px;
-        border-right: 1px solid rgba(245, 240, 232, 0.05);
-        text-align: center;
-        font-weight: 600;
-        font-size: clamp(0.82rem, 1.25vw, 1.05rem);
-        vertical-align: middle;
-        color: var(--cream);
+        padding: 10px 8px;
+        border-right: 1px solid rgba(245,240,232,0.05);
+        text-align: center; font-weight: 600; font-size: 22px;
+        vertical-align: middle; color: var(--cream);
       }
       .td-time {
-        font-family: "Barlow Condensed", sans-serif !important;
-        font-weight: 700 !important;
+        font-family: 'Barlow Condensed', Arial Narrow, sans-serif !important;
+        font-weight: 700 !important; font-size: 22px !important;
         letter-spacing: 0.05em;
-        color: var(--accent-gold-light) !important;
-        background: rgba(13, 31, 22, 0.45) !important;
+        color: var(--accent-gold-lt) !important;
+        background: rgba(13,31,22,0.45) !important;
       }
       .td-available {
-        color: rgba(255, 255, 255, 0.85) !important;
-        font-size: clamp(0.68rem, 0.95vw, 0.85rem) !important;
-        font-style: italic;
-        letter-spacing: 0.05em;
+        color: rgba(255,255,255,0.85) !important;
+        font-size: 18px !important;
+        font-style: italic; letter-spacing: 0.05em;
       }
       .td-booked {
-        font-family: "Barlow Condensed", sans-serif !important;
-        font-weight: 800 !important;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
-        border-radius: 5px;
-        color: #fff !important;
+        font-family: 'Barlow Condensed', Arial Narrow, sans-serif !important;
+        font-weight: 800 !important; font-size: 22px !important;
+        text-transform: uppercase; letter-spacing: 0.06em;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.35);
+        border-radius: 5px; color: #fff !important;
       }
-      .bk-0 {
-        background: linear-gradient(135deg, #1d6b4a, #27956a) !important;
-      }
-      .bk-1 {
-        background: linear-gradient(135deg, #b5821f, #d4a030) !important;
-      }
-      .bk-2 {
-        background: linear-gradient(135deg, #2a5f8a, #3a7dba) !important;
-      }
-      .bk-3 {
-        background: linear-gradient(135deg, #6b3a8a, #9050c0) !important;
-      }
-      .bk-4 {
-        background: linear-gradient(135deg, #8a2a2a, #c04040) !important;
-      }
-      .bk-5 {
-        background: linear-gradient(135deg, #3a6b2a, #5a9840) !important;
-      }
+      .bk-0 { background: -webkit-linear-gradient(135deg,#1d6b4a,#27956a) !important; background: linear-gradient(135deg,#1d6b4a,#27956a) !important; }
+      .bk-1 { background: -webkit-linear-gradient(135deg,#b5821f,#d4a030) !important; background: linear-gradient(135deg,#b5821f,#d4a030) !important; }
+      .bk-2 { background: -webkit-linear-gradient(135deg,#2a5f8a,#3a7dba) !important; background: linear-gradient(135deg,#2a5f8a,#3a7dba) !important; }
+      .bk-3 { background: -webkit-linear-gradient(135deg,#6b3a8a,#9050c0) !important; background: linear-gradient(135deg,#6b3a8a,#9050c0) !important; }
+      .bk-4 { background: -webkit-linear-gradient(135deg,#8a2a2a,#c04040) !important; background: linear-gradient(135deg,#8a2a2a,#c04040) !important; }
+      .bk-5 { background: -webkit-linear-gradient(135deg,#3a6b2a,#5a9840) !important; background: linear-gradient(135deg,#3a6b2a,#5a9840) !important; }
     </style>
   </head>
   <body>
+
     <!-- SLIDE 0: Welcome -->
     <div id="screen-welcome" class="screen active">
       <div class="court-texture"></div>
       <div class="court-lines">
-        <svg
-          viewBox="0 0 1920 1080"
-          preserveAspectRatio="xMidYMid slice"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect
-            x="80"
-            y="80"
-            width="1760"
-            height="920"
-            fill="none"
-            stroke="rgba(245,240,232,0.09)"
-            stroke-width="3"
-          />
-          <line
-            x1="960"
-            y1="80"
-            x2="960"
-            y2="1000"
-            stroke="rgba(245,240,232,0.09)"
-            stroke-width="2"
-          />
-          <line
-            x1="80"
-            y1="540"
-            x2="1840"
-            y2="540"
-            stroke="rgba(245,240,232,0.06)"
-            stroke-width="2"
-          />
-          <line
-            x1="220"
-            y1="80"
-            x2="220"
-            y2="1000"
-            stroke="rgba(245,240,232,0.05)"
-            stroke-width="1.5"
-          />
-          <line
-            x1="1700"
-            y1="80"
-            x2="1700"
-            y2="1000"
-            stroke="rgba(245,240,232,0.05)"
-            stroke-width="1.5"
-          />
-          <line
-            x1="220"
-            y1="280"
-            x2="1700"
-            y2="280"
-            stroke="rgba(245,240,232,0.05)"
-            stroke-width="1.5"
-          />
-          <line
-            x1="220"
-            y1="800"
-            x2="1700"
-            y2="800"
-            stroke="rgba(245,240,232,0.05)"
-            stroke-width="1.5"
-          />
+        <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+          <rect x="80"  y="60"  width="1760" height="960" fill="none" stroke="rgba(245,240,232,0.09)" stroke-width="3"/>
+          <line x1="960"  y1="60"   x2="960"  y2="1020" stroke="rgba(245,240,232,0.09)" stroke-width="2"/>
+          <line x1="80"   y1="540"  x2="1840" y2="540"  stroke="rgba(245,240,232,0.06)" stroke-width="2"/>
+          <line x1="220"  y1="60"   x2="220"  y2="1020" stroke="rgba(245,240,232,0.05)" stroke-width="1.5"/>
+          <line x1="1700" y1="60"   x2="1700" y2="1020" stroke="rgba(245,240,232,0.05)" stroke-width="1.5"/>
+          <line x1="220"  y1="240"  x2="1700" y2="240"  stroke="rgba(245,240,232,0.05)" stroke-width="1.5"/>
+          <line x1="220"  y1="840"  x2="1700" y2="840"  stroke="rgba(245,240,232,0.05)" stroke-width="1.5"/>
         </svg>
       </div>
       <div class="court-overlay"></div>
-
       <div class="ball-float ball-a"></div>
       <div class="ball-float ball-b"></div>
       <div class="ball-float ball-c"></div>
@@ -592,10 +357,7 @@
       <div class="welcome-content">
         <div class="welcome-badge">
           <div class="badge-dot"></div>
-          <span
-            >Indoor Tennis Court &bull; Telkom Regional 5 &bull; Telkom Property
-            Regional V</span
-          >
+          <span>Indoor Tennis Court &bull; Telkom Regional 7</span>
         </div>
         <div class="welcome-hero">
           <p class="welcome-subtitle">Selamat Datang di</p>
@@ -606,41 +368,29 @@
           <div class="welcome-divider"></div>
         </div>
         <div class="booking-card">
-          <p class="booking-label">
-            &#9679;&nbsp; Informasi Pemesanan Lapangan
-          </p>
-          <p class="booking-desc">
-            Untuk reservasi lapangan, silakan lakukan pemesanan melalui:
-          </p>
+          <p class="booking-label">&#9679;&nbsp; Informasi Pemesanan Lapangan</p>
+          <p class="booking-desc">Untuk reservasi lapangan, silakan lakukan pemesanan melalui:</p>
           <div class="booking-channels">
             <div class="channel-pill">
               <span class="channel-tag tag-web">WEB</span>
-              <div class="channel-name">
-                gelora.id<small>Website Resmi</small>
-              </div>
+              <div class="channel-name">gelora.id<small>Website Resmi</small></div>
             </div>
             <div class="channel-pill">
               <span class="channel-tag tag-app">APP</span>
-              <div class="channel-name">
-                Aplikasi GELORA<small>PlayStore &amp; AppStore</small>
-              </div>
+              <div class="channel-name">Aplikasi GELORA<small>PlayStore &amp; AppStore</small></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+
     <!-- SLIDE 1: Jadwal Pagi–Siang -->
     <div id="screen-jadwal-1" class="screen screen-jadwal">
       <div class="jadwal-header">
         <div>
-          <span class="jadwal-eyebrow"
-            >Indoor Tennis &bull; Telkom Makassar</span
-          >
-          <h2 class="jadwal-title">
-            Jadwal Lapangan
-            <span class="sesi-tag sesi-pagi">Sesi Pagi – Siang</span>
-          </h2>
+          <span class="jadwal-eyebrow">Indoor Tennis &bull; Telkom Makassar</span>
+          <h2 class="jadwal-title">Jadwal Lapangan <span class="sesi-tag sesi-pagi">Sesi Pagi – Siang</span></h2>
         </div>
         <div class="jadwal-date-badge current-date-display">Memuat...</div>
       </div>
@@ -653,17 +403,13 @@
       </div>
     </div>
 
+
     <!-- SLIDE 2: Jadwal Sore–Malam -->
     <div id="screen-jadwal-2" class="screen screen-jadwal">
       <div class="jadwal-header">
         <div>
-          <span class="jadwal-eyebrow"
-            >Indoor Tennis &bull; Telkom Makassar</span
-          >
-          <h2 class="jadwal-title">
-            Jadwal Lapangan
-            <span class="sesi-tag sesi-sore">Sesi Sore – Malam</span>
-          </h2>
+          <span class="jadwal-eyebrow">Indoor Tennis &bull; Telkom Makassar</span>
+          <h2 class="jadwal-title">Jadwal Lapangan <span class="sesi-tag sesi-sore">Sesi Sore – Malam</span></h2>
         </div>
         <div class="jadwal-date-badge current-date-display">Memuat...</div>
       </div>
@@ -676,179 +422,157 @@
       </div>
     </div>
 
+
     <script>
       const GAS_API_URL =
         "https://script.google.com/macros/s/AKfycbzpTVIM5S8FP38lpFUF4MO_Kbhc08jHxNdnGkULvEVmd0WUdNQFQTV3GY330cBJOiri/exec";
 
-      let currentScreenIndex = 0;
-      const screens = [
+      var currentScreenIndex = 0;
+      var screens = [
         document.getElementById("screen-welcome"),
         document.getElementById("screen-jadwal-1"),
-        document.getElementById("screen-jadwal-2"),
+        document.getElementById("screen-jadwal-2")
       ];
 
-      const jamSesi1 = [
-        "06:00 - 07:00",
-        "07:00 - 08:00",
-        "08:00 - 09:00",
-        "09:00 - 10:00",
-        "10:00 - 11:00",
-        "11:00 - 12:00",
-        "12:00 - 13:00",
-        "13:00 - 14:00",
-        "14:00 - 15:00",
+      var jamSesi1 = [
+        "06:00 - 07:00","07:00 - 08:00","08:00 - 09:00",
+        "09:00 - 10:00","10:00 - 11:00","11:00 - 12:00",
+        "12:00 - 13:00","13:00 - 14:00","14:00 - 15:00"
       ];
-      const jamSesi2 = [
-        "15:00 - 16:00",
-        "16:00 - 17:00",
-        "17:00 - 18:00",
-        "18:00 - 19:00",
-        "19:00 - 20:00",
-        "20:00 - 21:00",
-        "21:00 - 22:00",
-        "22:00 - 23:00",
+      var jamSesi2 = [
+        "15:00 - 16:00","16:00 - 17:00","17:00 - 18:00",
+        "18:00 - 19:00","19:00 - 20:00","20:00 - 21:00",
+        "21:00 - 22:00","22:00 - 23:00"
       ];
 
-      const bookingColors = ["bk-0", "bk-1", "bk-2", "bk-3", "bk-4", "bk-5"];
-      let pemesanColors = {};
-      let colorIndex = 0;
+      var bookingColors = ["bk-0","bk-1","bk-2","bk-3","bk-4","bk-5"];
+      var pemesanColors = {};
+      var colorIndex = 0;
 
-      /* Fullscreen on double-click */
-      document.body.addEventListener("dblclick", () => {
-        if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch(() => {});
+      document.body.addEventListener("dblclick", function() {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+          var el = document.documentElement;
+          if (el.requestFullscreen) el.requestFullscreen();
+          else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
         } else {
-          document.exitFullscreen();
+          if (document.exitFullscreen) document.exitFullscreen();
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
         }
       });
 
       function updateDateHeader() {
-        const opts = {
-          weekday: "long",
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        };
-        const dateText = new Date().toLocaleDateString("id-ID", opts);
-        document
-          .querySelectorAll(".current-date-display")
-          .forEach((el) => (el.innerText = dateText));
+        var opts = { weekday:"long", day:"2-digit", month:"long", year:"numeric" };
+        var dateText = new Date().toLocaleDateString("id-ID", opts);
+        var els = document.querySelectorAll(".current-date-display");
+        for (var i = 0; i < els.length; i++) { els[i].innerText = dateText; }
       }
 
       function rotateScreens() {
-        screens.forEach((s) => {
-          s.classList.remove("active");
-        });
+        for (var i = 0; i < screens.length; i++) {
+          screens[i].classList.remove("active");
+        }
         currentScreenIndex = (currentScreenIndex + 1) % screens.length;
         screens[currentScreenIndex].classList.add("active");
       }
 
-      async function fetchJadwal() {
-        try {
-          const response = await fetch(GAS_API_URL);
-          const data = await response.json();
+      function fetchJadwal() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", GAS_API_URL, true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            try {
+              var data = JSON.parse(xhr.responseText);
+              var today = new Date();
+              var yyyy  = today.getFullYear();
+              var mm    = String(today.getMonth() + 1).padStart("0", 2);
+              var dd    = String(today.getDate()).padStart("0", 2);
+              // padStart polyfill for old browsers
+              if (!String.prototype.padStart) {
+                String.prototype.padStart = function(len, fill) {
+                  var s = String(this);
+                  while (s.length < len) s = fill + s;
+                  return s;
+                };
+              }
+              mm = (today.getMonth() + 1 < 10 ? "0" : "") + (today.getMonth() + 1);
+              dd = (today.getDate() < 10 ? "0" : "") + today.getDate();
+              var dateString = yyyy + "-" + mm + "-" + dd;
 
-          const today = new Date();
-          const yyyy = today.getFullYear();
-          const mm = String(today.getMonth() + 1).padStart(2, "0");
-          const dd = String(today.getDate()).padStart(2, "0");
-          const dateString = `${yyyy}-${mm}-${dd}`;
+              var filteredData = [];
+              for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                if (!item["Tanggal"] || String(item["Tanggal"]).substring(0, 10) === dateString) {
+                  filteredData.push(item);
+                }
+              }
 
-          const filteredData = data.filter((item) => {
-            if (!item["Tanggal"]) return true;
-            return String(item["Tanggal"]).substring(0, 10) === dateString;
-          });
+              var courtsSet = {};
+              var courts = [];
+              for (var i = 0; i < data.length; i++) {
+                var n = data[i]["Nama Lapangan"];
+                if (n && !courtsSet[n]) { courtsSet[n] = true; courts.push(n); }
+              }
+              if (courts.length === 0) {
+                courts = [
+                  "Lapangan Tennis Indoor 1","Lapangan Tennis Indoor 2",
+                  "Lapangan Tennis Indoor 3","Lapangan Tennis Indoor 4"
+                ];
+              }
 
-          let courts = [
-            ...new Set(data.map((item) => item["Nama Lapangan"])),
-          ].filter(Boolean);
-          if (courts.length === 0) {
-            courts = [
-              "Lapangan Tennis Indoor 1",
-              "Lapangan Tennis Indoor 2",
-              "Lapangan Tennis Indoor 3",
-              "Lapangan Tennis Indoor 4",
-            ];
+              renderMatrixTable(filteredData, courts, jamSesi1, "jadwal-head-1", "jadwal-body-1");
+              renderMatrixTable(filteredData, courts, jamSesi2, "jadwal-head-2", "jadwal-body-2");
+            } catch(e) { console.error("Parse error:", e); }
           }
-
-          renderMatrixTable(
-            filteredData,
-            courts,
-            jamSesi1,
-            "jadwal-head-1",
-            "jadwal-body-1",
-          );
-          renderMatrixTable(
-            filteredData,
-            courts,
-            jamSesi2,
-            "jadwal-head-2",
-            "jadwal-body-2",
-          );
-        } catch (err) {
-          console.error("Gagal menarik data jadwal:", err);
-        }
+        };
+        xhr.send();
       }
 
-      function renderMatrixTable(
-        filteredData,
-        courts,
-        jamArray,
-        headId,
-        bodyId,
-      ) {
-        const matrix = {};
-        jamArray.forEach((t) => {
-          matrix[t] = {};
-          courts.forEach((c) => (matrix[t][c] = null));
-        });
-
-        filteredData.forEach((item) => {
-          if (
-            matrix[item["Waktu"]] &&
-            matrix[item["Waktu"]][item["Nama Lapangan"]] !== undefined
-          ) {
+      function renderMatrixTable(filteredData, courts, jamArray, headId, bodyId) {
+        var matrix = {};
+        for (var i = 0; i < jamArray.length; i++) {
+          matrix[jamArray[i]] = {};
+          for (var j = 0; j < courts.length; j++) matrix[jamArray[i]][courts[j]] = null;
+        }
+        for (var i = 0; i < filteredData.length; i++) {
+          var item = filteredData[i];
+          if (matrix[item["Waktu"]] && matrix[item["Waktu"]][item["Nama Lapangan"]] !== undefined) {
             matrix[item["Waktu"]][item["Nama Lapangan"]] = item;
           }
-        });
+        }
 
-        let headHTML = `<tr><th style="width:145px">WAKTU</th>`;
-        courts.forEach((court) => {
-          const short = court.replace("Lapangan Tennis ", "");
-          headHTML += `<th>${short}</th>`;
-        });
-        headHTML += `</tr>`;
+        var headHTML = "<tr><th style='width:180px'>WAKTU</th>";
+        for (var j = 0; j < courts.length; j++) {
+          var short = courts[j].replace("Lapangan Tennis ", "");
+          headHTML += "<th>" + short + "</th>";
+        }
+        headHTML += "</tr>";
         document.getElementById(headId).innerHTML = headHTML;
 
-        const bodyEl = document.getElementById(bodyId);
+        var bodyEl = document.getElementById(bodyId);
         bodyEl.innerHTML = "";
 
-        jamArray.forEach((time) => {
-          const tr = document.createElement("tr");
-          let rowHTML = `<td class="td-time">${time}</td>`;
+        for (var i = 0; i < jamArray.length; i++) {
+          var time = jamArray[i];
+          var tr = document.createElement("tr");
+          var rowHTML = "<td class='td-time'>" + time + "</td>";
 
-          courts.forEach((court) => {
-            const cell = matrix[time][court];
-            if (
-              cell &&
-              cell["Status"] === "Terbooking" &&
-              cell["Nama Pemesan"] !== "-"
-            ) {
-              const nama = cell["Nama Pemesan"];
+          for (var j = 0; j < courts.length; j++) {
+            var cell = matrix[time][courts[j]];
+            if (cell && cell["Status"] === "Terbooking" && cell["Nama Pemesan"] !== "-") {
+              var nama = cell["Nama Pemesan"];
               if (!pemesanColors[nama]) {
-                pemesanColors[nama] =
-                  bookingColors[colorIndex % bookingColors.length];
+                pemesanColors[nama] = bookingColors[colorIndex % bookingColors.length];
                 colorIndex++;
               }
-              rowHTML += `<td class="td-booked ${pemesanColors[nama]}">${nama}</td>`;
+              rowHTML += "<td class='td-booked " + pemesanColors[nama] + "'>" + nama + "</td>";
             } else {
-              rowHTML += `<td class="td-available">Tersedia</td>`;
+              rowHTML += "<td class='td-available'>Tersedia</td>";
             }
-          });
+          }
 
           tr.innerHTML = rowHTML;
           bodyEl.appendChild(tr);
-        });
+        }
       }
 
       updateDateHeader();
