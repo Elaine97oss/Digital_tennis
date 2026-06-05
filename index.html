@@ -107,23 +107,23 @@
       /* welcome layout — fixed px sizes for TV */
       .welcome-content {
         position: relative; z-index: 10;
-        width: 1400px;
+        width: 1500px;
         display: -webkit-flex; display: flex;
         -webkit-flex-direction: column; flex-direction: column;
-        gap: 28px;
+        gap: 48px;
         -webkit-align-items: center; align-items: center;
       }
 
       .welcome-badge {
         display: -webkit-flex; display: flex;
         -webkit-align-items: center; align-items: center;
-        gap: 10px;
+        gap: 12px;
         background: rgba(201,168,76,0.12);
         border: 1px solid rgba(201,168,76,0.38);
-        padding: 10px 26px; border-radius: 50px;
+        padding: 14px 34px; border-radius: 50px;
       }
       .badge-dot {
-        width: 9px; height: 9px; border-radius: 50%;
+        width: 11px; height: 11px; border-radius: 50%;
         background: var(--accent-gold);
         -webkit-animation: pulse 2s infinite; animation: pulse 2s infinite;
       }
@@ -135,7 +135,7 @@
       }
       .welcome-badge span {
         font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
-        font-weight: 700; font-size: 20px;
+        font-weight: 700; font-size: 24px;
         letter-spacing: 0.22em; color: var(--accent-gold-lt);
         text-transform: uppercase;
       }
@@ -143,71 +143,71 @@
       .welcome-hero { text-align: center; }
       .welcome-subtitle {
         font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
-        font-weight: 600; font-size: 28px;
+        font-weight: 600; font-size: 34px;
         color: var(--accent-gold-lt); letter-spacing: 0.35em;
-        text-transform: uppercase; margin-bottom: 6px; opacity: 0.9;
+        text-transform: uppercase; margin-bottom: 12px; opacity: 0.9;
       }
       .welcome-title {
         font-family: 'Bebas Neue', Impact, sans-serif;
-        font-size: 130px; line-height: 0.92;
+        font-size: 138px; line-height: 1.0;
         color: var(--cream); letter-spacing: 0.03em;
         text-shadow: 0 4px 40px rgba(0,0,0,0.4);
       }
-      .welcome-title .highlight { color: var(--tennis-ball); display: block; }
+      .welcome-title .highlight { color: var(--tennis-ball); display: block; margin-top: 4px; }
       .welcome-divider {
-        width: 120px; height: 3px;
+        width: 160px; height: 3px;
         background: -webkit-linear-gradient(left, transparent, #c9a84c, transparent);
         background: linear-gradient(90deg, transparent, #c9a84c, transparent);
-        margin: 14px auto 0;
+        margin: 20px auto 0;
       }
 
       /* booking card — NO backdrop-filter (not supported on LG) */
       .booking-card {
         background: rgba(13,31,22,0.88);
         border: 1px solid rgba(201,168,76,0.22);
-        border-radius: 22px;
-        padding: 28px 36px;
+        border-radius: 24px;
+        padding: 36px 48px;
         width: 100%;
       }
       .booking-label {
         font-family: 'Barlow Condensed', Arial Narrow, sans-serif;
-        font-weight: 700; font-size: 18px;
+        font-weight: 700; font-size: 20px;
         letter-spacing: 0.3em; color: var(--text-muted);
-        text-transform: uppercase; text-align: center; margin-bottom: 14px;
+        text-transform: uppercase; text-align: center; margin-bottom: 18px;
       }
       .booking-desc {
-        font-weight: 600; font-size: 30px;
-        color: var(--cream); text-align: center; margin-bottom: 20px; opacity: 0.9;
+        font-weight: 600; font-size: 34px;
+        color: var(--cream); text-align: center; margin-bottom: 28px; opacity: 0.9;
       }
       .booking-channels {
         display: -webkit-flex; display: flex;
-        gap: 16px; -webkit-justify-content: center; justify-content: center;
+        gap: 20px; -webkit-justify-content: center; justify-content: center;
       }
       .channel-pill {
         display: -webkit-flex; display: flex;
         -webkit-align-items: center; align-items: center;
-        gap: 16px;
+        gap: 20px;
         background: rgba(245,240,232,0.05);
         border: 1px solid rgba(245,240,232,0.1);
-        border-radius: 14px; padding: 16px 28px;
-        width: 560px;
+        border-radius: 16px; padding: 22px 36px;
+        width: 580px;
       }
       .channel-tag {
         font-family: 'Bebas Neue', Impact, sans-serif;
-        font-size: 22px; letter-spacing: 0.1em;
-        padding: 7px 16px; border-radius: 8px; -webkit-flex-shrink: 0; flex-shrink: 0;
+        font-size: 24px; letter-spacing: 0.1em;
+        padding: 9px 20px; border-radius: 8px; -webkit-flex-shrink: 0; flex-shrink: 0;
       }
       .tag-web { background: var(--accent-gold); color: var(--dark); }
       .tag-app { background: #2ecc8a; color: var(--dark); }
       .channel-name {
         font-family: 'Bebas Neue', Impact, sans-serif;
-        font-size: 44px; color: var(--cream);
+        font-size: 52px; color: var(--cream);
         letter-spacing: 0.05em; line-height: 1;
       }
       .channel-name small {
         display: block; font-family: 'Barlow', Arial, sans-serif;
-        font-size: 14px; font-weight: 500; letter-spacing: 0.1em;
-        opacity: 0.5; text-transform: uppercase; margin-top: 3px;
+        font-size: 16px; font-weight: 500; letter-spacing: 0.1em;
+        opacity: 0.5; text-transform: uppercase; margin-top: 4px;
       }
 
       /* ── SCHEDULE SLIDES ──────────────────────────── */
