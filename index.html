@@ -7,289 +7,672 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"
     />
     <title>Digital Signage Lapangan Tennis Telkom</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              "sporty-blue": "#1e3a8a",
-              "sporty-dark": "#0f172a",
-              "sporty-light": "#3b82f6",
-              "tennis-green": "#10b981",
-              "tennis-ball": "#d9f99d",
-              "gelora-navy": "#213659",
-              "gelora-orange": "#f26925",
-              "gelora-teal": "#3c93b6",
-            },
-            fontFamily: {
-              sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-            },
-          },
-        },
-      };
-    </script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@400;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <style>
-      /* CSS RESET KHUSUS SMART TV */
+      :root {
+        --court-green: #1a3a2a;
+        --court-green-mid: #1f4a35;
+        --accent-gold: #c9a84c;
+        --accent-gold-light: #e8c96e;
+        --tennis-ball: #cfe04a;
+        --cream: #f5f0e8;
+        --dark: #0d1f16;
+        --text-muted: rgba(245, 240, 232, 0.55);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
       html,
       body {
         width: 100%;
         height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden !important;
-        background-color: #1e3a8a; /* Warna dasar diubah biru, mencegah bocor putih */
+        overflow: hidden;
+        background: var(--dark);
         touch-action: none;
+        -webkit-font-smoothing: antialiased;
       }
 
       body {
-        font-family: "Inter", sans-serif;
-        position: absolute; /* Memaksa elemen menempel ke ujung absolut */
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        font-family: "Barlow", sans-serif;
+        position: absolute;
+        inset: 0;
       }
-
-      .screen {
-        width: 100%;
-        height: 100%;
-        transition: opacity 1.5s ease-in-out;
-      }
-
       ::-webkit-scrollbar {
         display: none;
       }
 
-      .spin-slow {
-        animation: spin 30s linear infinite;
+      /* ── SCREEN SYSTEM ─────────────────────────────────────── */
+      .screen {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        z-index: 0;
+        transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      @keyframes spin {
-        from {
-          transform: rotate(0deg);
+      .screen.active {
+        opacity: 1;
+        z-index: 10;
+      }
+
+      /* ── WELCOME ────────────────────────────────────────────── */
+      #screen-welcome {
+        background: var(--court-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .court-texture {
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='1' cy='1' r='0.5' fill='rgba(255,255,255,0.04)'/%3E%3Ccircle cx='3' cy='3' r='0.5' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .court-lines {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+      }
+      .court-lines svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .court-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background: radial-gradient(
+          ellipse at 50% 50%,
+          rgba(31, 74, 53, 0.3) 0%,
+          rgba(13, 31, 22, 0.75) 100%
+        );
+      }
+
+      .ball-float {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 35% 35%,
+          var(--tennis-ball),
+          #a0b830
+        );
+        box-shadow:
+          0 0 60px rgba(207, 224, 74, 0.25),
+          inset -6px -6px 16px rgba(0, 0, 0, 0.2);
+        animation: floatBall 8s ease-in-out infinite;
+        z-index: 3;
+        pointer-events: none;
+      }
+      .ball-float::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M2 50 Q25 15 50 50 Q75 85 98 50' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2.5'/%3E%3Cpath d='M2 50 Q25 85 50 50 Q75 15 98 50' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2.5'/%3E%3C/svg%3E")
+          center/contain no-repeat;
+      }
+      .ball-a {
+        width: 300px;
+        height: 300px;
+        bottom: -60px;
+        right: 4%;
+        opacity: 0.15;
+        animation-duration: 20s;
+      }
+      .ball-b {
+        width: 70px;
+        height: 70px;
+        bottom: 18%;
+        left: 7%;
+        opacity: 0.55;
+        animation-duration: 11s;
+        animation-delay: -3s;
+      }
+      .ball-c {
+        width: 44px;
+        height: 44px;
+        top: 10%;
+        right: 20%;
+        opacity: 0.4;
+        animation-duration: 14s;
+        animation-delay: -7s;
+      }
+
+      @keyframes floatBall {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
         }
-        to {
-          transform: rotate(360deg);
+        25% {
+          transform: translateY(-22px) rotate(45deg);
         }
+        75% {
+          transform: translateY(10px) rotate(-30deg);
+        }
+      }
+
+      .welcome-content {
+        position: relative;
+        z-index: 10;
+        width: 95%;
+        max-width: 1400px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.8rem;
+        align-items: center;
+      }
+
+      .welcome-badge {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(201, 168, 76, 0.12);
+        border: 1px solid rgba(201, 168, 76, 0.38);
+        padding: 8px 22px;
+        border-radius: 50px;
+      }
+      .badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent-gold);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(1.5);
+        }
+      }
+      .welcome-badge span {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: 0.2em;
+        color: var(--accent-gold-light);
+        text-transform: uppercase;
+      }
+
+      .welcome-hero {
+        text-align: center;
+      }
+      .welcome-subtitle {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: clamp(1rem, 2vw, 1.5rem);
+        color: var(--accent-gold-light);
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        margin-bottom: 0.4rem;
+        opacity: 0.9;
+      }
+      .welcome-title {
+        font-family: "Bebas Neue", cursive;
+        font-size: clamp(3.8rem, 9vw, 9rem);
+        line-height: 0.92;
+        color: var(--cream);
+        letter-spacing: 0.03em;
+        text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+      }
+      .welcome-title .highlight {
+        color: var(--tennis-ball);
+        display: block;
+      }
+      .welcome-divider {
+        width: 120px;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent-gold),
+          transparent
+        );
+        margin: 1rem auto 0;
+      }
+
+      .booking-card {
+        background: rgba(13, 31, 22, 0.72);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(201, 168, 76, 0.22);
+        border-radius: 22px;
+        padding: 1.8rem 2.2rem;
+        width: 100%;
+      }
+      .booking-label {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+        letter-spacing: 0.3em;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+      .booking-desc {
+        font-weight: 600;
+        font-size: clamp(1.2rem, 2.3vw, 1.8rem);
+        color: var(--cream);
+        text-align: center;
+        margin-bottom: 1.4rem;
+        opacity: 0.9;
+      }
+      .booking-channels {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .channel-pill {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: rgba(245, 240, 232, 0.05);
+        border: 1px solid rgba(245, 240, 232, 0.1);
+        border-radius: 14px;
+        padding: 1rem 1.6rem;
+        flex: 1;
+        min-width: 260px;
+        max-width: 420px;
+      }
+      .channel-tag {
+        font-family: "Bebas Neue", cursive;
+        font-size: 1.05rem;
+        letter-spacing: 0.1em;
+        padding: 6px 14px;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+      .tag-web {
+        background: var(--accent-gold);
+        color: var(--dark);
+      }
+      .tag-app {
+        background: #2ecc8a;
+        color: var(--dark);
+      }
+      .channel-name {
+        font-family: "Bebas Neue", cursive;
+        font-size: clamp(1.6rem, 3vw, 2.3rem);
+        color: var(--cream);
+        letter-spacing: 0.05em;
+        line-height: 1;
+      }
+      .channel-name small {
+        display: block;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        opacity: 0.5;
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+
+      /* ── SCHEDULE SLIDES ────────────────────────────────────── */
+      .screen-jadwal {
+        background: var(--dark);
+        display: flex;
+        flex-direction: column;
+        padding: 1.4rem 2rem;
+        overflow: hidden;
+      }
+
+      .jadwal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-shrink: 0;
+      }
+      .jadwal-eyebrow {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(0.65rem, 1vw, 0.88rem);
+        letter-spacing: 0.35em;
+        color: var(--accent-gold);
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .jadwal-eyebrow::before {
+        content: "";
+        display: inline-block;
+        width: 26px;
+        height: 2px;
+        background: var(--accent-gold);
+      }
+      .jadwal-title {
+        font-family: "Bebas Neue", cursive;
+        font-size: clamp(2.6rem, 5.5vw, 4.8rem);
+        color: var(--cream);
+        letter-spacing: 0.04em;
+        line-height: 1;
+      }
+      .sesi-tag {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 800;
+        font-size: clamp(0.9rem, 1.7vw, 1.4rem);
+        letter-spacing: 0.12em;
+        vertical-align: middle;
+        padding: 4px 14px;
+        border-radius: 6px;
+        margin-left: 12px;
+      }
+      .sesi-pagi {
+        background: rgba(201, 168, 76, 0.18);
+        color: var(--accent-gold-light);
+        border: 1px solid rgba(201, 168, 76, 0.35);
+      }
+      .sesi-sore {
+        background: rgba(46, 204, 138, 0.14);
+        color: #5de8a8;
+        border: 1px solid rgba(46, 204, 138, 0.3);
+      }
+
+      .jadwal-date-badge {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(0.95rem, 1.7vw, 1.45rem);
+        letter-spacing: 0.08em;
+        color: var(--cream);
+        background: rgba(245, 240, 232, 0.06);
+        border: 1px solid rgba(245, 240, 232, 0.11);
+        padding: 10px 20px;
+        border-radius: 12px;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .header-divider {
+        width: 100%;
+        height: 1px;
+        flex-shrink: 0;
+        background: linear-gradient(
+          90deg,
+          var(--accent-gold) 0%,
+          rgba(201, 168, 76, 0.15) 35%,
+          transparent 100%
+        );
+        margin-bottom: 1rem;
+      }
+
+      .table-wrap {
+        flex: 1;
+        overflow: hidden;
+        border-radius: 14px;
+        border: 1px solid rgba(245, 240, 232, 0.07);
+        display: flex;
+        flex-direction: column;
+      }
+
+      table.jadwal-table {
+        width: 100%;
+        height: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-family: "Barlow", sans-serif;
+      }
+      table.jadwal-table thead {
+        background: linear-gradient(
+          135deg,
+          var(--court-green-mid),
+          var(--court-green)
+        );
+      }
+      table.jadwal-table thead th {
+        padding: 13px 10px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(0.75rem, 1.15vw, 1.05rem);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--cream);
+        text-align: center;
+        border-right: 1px solid rgba(245, 240, 232, 0.08);
+      }
+      table.jadwal-table thead th:first-child {
+        color: var(--accent-gold-light);
+        width: 145px;
+      }
+      table.jadwal-table tbody tr {
+        border-bottom: 1px solid rgba(245, 240, 232, 0.05);
+      }
+      table.jadwal-table tbody tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      table.jadwal-table tbody td {
+        padding: 9px 8px;
+        border-right: 1px solid rgba(245, 240, 232, 0.05);
+        text-align: center;
+        font-weight: 600;
+        font-size: clamp(0.82rem, 1.25vw, 1.05rem);
+        vertical-align: middle;
+        color: var(--cream);
+      }
+      .td-time {
+        font-family: "Barlow Condensed", sans-serif !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.05em;
+        color: var(--accent-gold-light) !important;
+        background: rgba(13, 31, 22, 0.45) !important;
+      }
+      .td-available {
+        color: rgba(255, 255, 255, 0.85) !important;
+        font-size: clamp(0.68rem, 0.95vw, 0.85rem) !important;
+        font-style: italic;
+        letter-spacing: 0.05em;
+      }
+      .td-booked {
+        font-family: "Barlow Condensed", sans-serif !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+        border-radius: 5px;
+        color: #fff !important;
+      }
+      .bk-0 {
+        background: linear-gradient(135deg, #1d6b4a, #27956a) !important;
+      }
+      .bk-1 {
+        background: linear-gradient(135deg, #b5821f, #d4a030) !important;
+      }
+      .bk-2 {
+        background: linear-gradient(135deg, #2a5f8a, #3a7dba) !important;
+      }
+      .bk-3 {
+        background: linear-gradient(135deg, #6b3a8a, #9050c0) !important;
+      }
+      .bk-4 {
+        background: linear-gradient(135deg, #8a2a2a, #c04040) !important;
+      }
+      .bk-5 {
+        background: linear-gradient(135deg, #3a6b2a, #5a9840) !important;
       }
     </style>
   </head>
-  <body class="text-slate-800">
-    <div
-      id="screen-welcome"
-      class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-100 z-10 bg-sporty-blue overflow-hidden w-full h-full"
-    >
-      <div
-        class="absolute inset-0 z-0 opacity-20 pointer-events-none flex flex-col items-center justify-center w-full h-full"
-      >
-        <div
-          class="w-full h-full border-[16px] border-white max-w-[90%] max-h-[95%] absolute"
-        ></div>
-        <div
-          class="w-full h-2 bg-white absolute top-1/2 transform -translate-y-1/2 max-w-[90%]"
-        ></div>
-        <div
-          class="h-full w-2 bg-white absolute left-1/2 transform -translate-x-1/2 max-h-[95%]"
-        ></div>
-        <div
-          class="w-full h-full border-x-[16px] border-white max-w-[60%] max-h-[95%] absolute"
-        ></div>
+  <body>
+    <!-- SLIDE 0: Welcome -->
+    <div id="screen-welcome" class="screen active">
+      <div class="court-texture"></div>
+      <div class="court-lines">
+        <svg
+          viewBox="0 0 1920 1080"
+          preserveAspectRatio="xMidYMid slice"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="80"
+            y="80"
+            width="1760"
+            height="920"
+            fill="none"
+            stroke="rgba(245,240,232,0.09)"
+            stroke-width="3"
+          />
+          <line
+            x1="960"
+            y1="80"
+            x2="960"
+            y2="1000"
+            stroke="rgba(245,240,232,0.09)"
+            stroke-width="2"
+          />
+          <line
+            x1="80"
+            y1="540"
+            x2="1840"
+            y2="540"
+            stroke="rgba(245,240,232,0.06)"
+            stroke-width="2"
+          />
+          <line
+            x1="220"
+            y1="80"
+            x2="220"
+            y2="1000"
+            stroke="rgba(245,240,232,0.05)"
+            stroke-width="1.5"
+          />
+          <line
+            x1="1700"
+            y1="80"
+            x2="1700"
+            y2="1000"
+            stroke="rgba(245,240,232,0.05)"
+            stroke-width="1.5"
+          />
+          <line
+            x1="220"
+            y1="280"
+            x2="1700"
+            y2="280"
+            stroke="rgba(245,240,232,0.05)"
+            stroke-width="1.5"
+          />
+          <line
+            x1="220"
+            y1="800"
+            x2="1700"
+            y2="800"
+            stroke="rgba(245,240,232,0.05)"
+            stroke-width="1.5"
+          />
+        </svg>
       </div>
+      <div class="court-overlay"></div>
 
-      <svg
-        class="absolute -bottom-32 -right-20 w-[450px] h-[450px] text-tennis-ball opacity-80 spin-slow drop-shadow-2xl"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM12 20.5C10.5 15 6.5 11 2.5 10.5C3.5 6 7 2.5 11.5 2.5C12 7.5 16.5 11.5 21.5 12C20.5 17 17 20 12 20.5Z"
-          stroke="white"
-          stroke-width="0.2"
-        />
-      </svg>
+      <div class="ball-float ball-a"></div>
+      <div class="ball-float ball-b"></div>
+      <div class="ball-float ball-c"></div>
 
-      <div
-        class="relative z-10 flex flex-col items-center text-center w-[95%] max-w-[1400px]"
-      >
-        <div
-          class="mb-8 backdrop-blur-sm bg-sporty-dark/40 px-10 py-8 rounded-3xl border border-white/10 shadow-2xl w-full"
-        >
-          <p
-            class="text-2xl md:text-3xl lg:text-4xl font-bold text-tennis-ball mb-2 tracking-widest uppercase"
+      <div class="welcome-content">
+        <div class="welcome-badge">
+          <div class="badge-dot"></div>
+          <span
+            >Indoor Tennis Court &bull; Telkom Regional 5 &bull; Telkom Property
+            Regional V</span
           >
-            Selamat Datang di
-          </p>
-          <h1
-            class="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white drop-shadow-lg leading-tight"
-          >
-            Lapangan Tennis Indoor<br /><span
-              class="text-transparent bg-clip-text bg-gradient-to-r from-tennis-ball to-tennis-green"
-              >Telkom Makassar</span
-            >
-          </h1>
         </div>
-
-        <div
-          class="bg-white rounded-[2rem] shadow-2xl p-8 w-full flex flex-col items-center justify-center border-b-[12px] border-tennis-green"
-        >
-          <h3
-            class="text-xl lg:text-2xl font-black text-slate-400 uppercase tracking-widest mb-2"
-          >
-            Informasi Booking
-          </h3>
-          <p
-            class="text-3xl lg:text-4xl font-bold text-sporty-dark mb-8 leading-snug"
-          >
-            Untuk pemesanan lapangan, silakan melalui:
+        <div class="welcome-hero">
+          <p class="welcome-subtitle">Selamat Datang di</p>
+          <h1 class="welcome-title">
+            Lapangan Tennis Indoor
+            <span class="highlight">Telkom Makassar</span>
+          </h1>
+          <div class="welcome-divider"></div>
+        </div>
+        <div class="booking-card">
+          <p class="booking-label">
+            &#9679;&nbsp; Informasi Pemesanan Lapangan
           </p>
-
-          <div
-            class="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-5xl"
-          >
-            <div
-              class="flex flex-1 items-center justify-center space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-200"
-            >
-              <span
-                class="bg-gelora-orange text-white px-5 py-2 rounded-xl font-black text-2xl shadow-md"
-                >WEB</span
-              >
-              <p
-                class="text-4xl font-black text-gelora-navy underline decoration-gelora-orange decoration-4"
-              >
-                gelora.id
-              </p>
+          <p class="booking-desc">
+            Untuk reservasi lapangan, silakan lakukan pemesanan melalui:
+          </p>
+          <div class="booking-channels">
+            <div class="channel-pill">
+              <span class="channel-tag tag-web">WEB</span>
+              <div class="channel-name">
+                gelora.id<small>Website Resmi</small>
+              </div>
             </div>
-
-            <div
-              class="flex flex-1 items-center justify-center space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-200 relative overflow-hidden"
-            >
-              <div
-                class="absolute right-0 top-0 bottom-0 w-32 bg-gelora-teal opacity-10 skew-x-12 transform origin-bottom"
-              ></div>
-              <span
-                class="bg-gelora-teal text-white px-5 py-2 rounded-xl font-black text-2xl shadow-md z-10"
-                >APP</span
-              >
-              <div class="z-10 text-left">
-                <p class="text-3xl font-bold text-slate-700">
-                  Aplikasi
-                  <span class="text-gelora-navy font-black text-4xl"
-                    >GELORA</span
-                  >
-                </p>
+            <div class="channel-pill">
+              <span class="channel-tag tag-app">APP</span>
+              <div class="channel-name">
+                Aplikasi GELORA<small>PlayStore &amp; AppStore</small>
               </div>
             </div>
           </div>
-
-          <p
-            class="text-lg font-bold text-slate-400 mt-6 tracking-widest uppercase"
-          >
-            Dapat di-download di PlayStore & AppStore
-          </p>
         </div>
       </div>
     </div>
 
-    <div
-      id="screen-jadwal-1"
-      class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-0 z-0 bg-slate-100 w-full h-full"
-    >
-      <div
-        class="bg-white shadow-2xl rounded-3xl p-6 md:p-8 w-full h-full flex flex-col border border-slate-200"
-      >
-        <div
-          class="mb-4 flex justify-between items-end border-b-4 border-slate-100 pb-3"
-        >
-          <div>
-            <h2
-              class="text-4xl md:text-5xl font-black text-sporty-blue tracking-tight"
-            >
-              Jadwal Lapangan
-              <span
-                class="text-2xl md:text-3xl text-sporty-light ml-2 bg-blue-50 px-4 py-1 rounded-lg"
-                >SESI PAGI - SIANG</span
-              >
-            </h2>
-            <p
-              class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest"
-            >
-              Indoor Tennis TELKOM
-            </p>
-          </div>
-          <div
-            class="bg-tennis-green text-white px-6 py-2 rounded-xl shadow-md text-2xl font-bold current-date-display"
+    <!-- SLIDE 1: Jadwal Pagi–Siang -->
+    <div id="screen-jadwal-1" class="screen screen-jadwal">
+      <div class="jadwal-header">
+        <div>
+          <span class="jadwal-eyebrow"
+            >Indoor Tennis &bull; Telkom Makassar</span
           >
-            Memuat...
-          </div>
+          <h2 class="jadwal-title">
+            Jadwal Lapangan
+            <span class="sesi-tag sesi-pagi">Sesi Pagi – Siang</span>
+          </h2>
         </div>
-        <div
-          class="overflow-hidden flex-grow rounded-2xl border border-slate-200 shadow-sm flex flex-col"
-        >
-          <table class="w-full text-left border-collapse text-xl h-full">
-            <thead
-              id="jadwal-head-1"
-              class="bg-sporty-blue text-white text-center uppercase tracking-wider text-sm md:text-lg h-[10%]"
-            ></thead>
-            <tbody
-              id="jadwal-body-1"
-              class="text-lg md:text-xl font-semibold bg-slate-50 h-[90%]"
-            ></tbody>
-          </table>
-        </div>
+        <div class="jadwal-date-badge current-date-display">Memuat...</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="table-wrap">
+        <table class="jadwal-table">
+          <thead id="jadwal-head-1"></thead>
+          <tbody id="jadwal-body-1"></tbody>
+        </table>
       </div>
     </div>
 
-    <div
-      id="screen-jadwal-2"
-      class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-0 z-0 bg-slate-100 w-full h-full"
-    >
-      <div
-        class="bg-white shadow-2xl rounded-3xl p-6 md:p-8 w-full h-full flex flex-col border border-slate-200"
-      >
-        <div
-          class="mb-4 flex justify-between items-end border-b-4 border-slate-100 pb-3"
-        >
-          <div>
-            <h2
-              class="text-4xl md:text-5xl font-black text-sporty-blue tracking-tight"
-            >
-              Jadwal Lapangan
-              <span
-                class="text-2xl md:text-3xl text-indigo-500 ml-2 bg-indigo-50 px-4 py-1 rounded-lg"
-                >SESI SORE - MALAM</span
-              >
-            </h2>
-            <p
-              class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest"
-            >
-              Indoor Tennis TELKOM
-            </p>
-          </div>
-          <div
-            class="bg-tennis-green text-white px-6 py-2 rounded-xl shadow-md text-2xl font-bold current-date-display"
+    <!-- SLIDE 2: Jadwal Sore–Malam -->
+    <div id="screen-jadwal-2" class="screen screen-jadwal">
+      <div class="jadwal-header">
+        <div>
+          <span class="jadwal-eyebrow"
+            >Indoor Tennis &bull; Telkom Makassar</span
           >
-            Memuat...
-          </div>
+          <h2 class="jadwal-title">
+            Jadwal Lapangan
+            <span class="sesi-tag sesi-sore">Sesi Sore – Malam</span>
+          </h2>
         </div>
-        <div
-          class="overflow-hidden flex-grow rounded-2xl border border-slate-200 shadow-sm flex flex-col"
-        >
-          <table class="w-full text-left border-collapse text-xl h-full">
-            <thead
-              id="jadwal-head-2"
-              class="bg-sporty-blue text-white text-center uppercase tracking-wider text-sm md:text-lg h-[10%]"
-            ></thead>
-            <tbody
-              id="jadwal-body-2"
-              class="text-lg md:text-xl font-semibold bg-slate-50 h-[90%]"
-            ></tbody>
-          </table>
-        </div>
+        <div class="jadwal-date-badge current-date-display">Memuat...</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="table-wrap">
+        <table class="jadwal-table">
+          <thead id="jadwal-head-2"></thead>
+          <tbody id="jadwal-body-2"></tbody>
+        </table>
       </div>
     </div>
 
@@ -326,51 +709,38 @@
         "22:00 - 23:00",
       ];
 
-      const colorPalette = [
-        "bg-sporty-light",
-        "bg-tennis-green",
-        "bg-teal-500",
-        "bg-indigo-500",
-        "bg-orange-500",
-        "bg-rose-500",
-      ];
+      const bookingColors = ["bk-0", "bk-1", "bk-2", "bk-3", "bk-4", "bk-5"];
       let pemesanColors = {};
       let colorIndex = 0;
 
-      document.body.addEventListener("dblclick", function () {
+      /* Fullscreen on double-click */
+      document.body.addEventListener("dblclick", () => {
         if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch((err) => {
-            console.log(`Error: ${err.message}`);
-          });
+          document.documentElement.requestFullscreen().catch(() => {});
         } else {
           document.exitFullscreen();
         }
       });
 
       function updateDateHeader() {
-        const options = {
+        const opts = {
           weekday: "long",
           day: "2-digit",
           month: "long",
           year: "numeric",
         };
-        const dateText = new Date().toLocaleDateString("en-GB", options);
+        const dateText = new Date().toLocaleDateString("id-ID", opts);
         document
           .querySelectorAll(".current-date-display")
           .forEach((el) => (el.innerText = dateText));
       }
 
       function rotateScreens() {
-        screens.forEach((screen) => {
-          screen.classList.replace("opacity-100", "opacity-0");
-          screen.classList.replace("z-10", "z-0");
+        screens.forEach((s) => {
+          s.classList.remove("active");
         });
         currentScreenIndex = (currentScreenIndex + 1) % screens.length;
-        screens[currentScreenIndex].classList.replace(
-          "opacity-0",
-          "opacity-100",
-        );
-        screens[currentScreenIndex].classList.replace("z-0", "z-10");
+        screens[currentScreenIndex].classList.add("active");
       }
 
       async function fetchJadwal() {
@@ -415,8 +785,8 @@
             "jadwal-head-2",
             "jadwal-body-2",
           );
-        } catch (error) {
-          console.error("Gagal menarik data jadwal:", error);
+        } catch (err) {
+          console.error("Gagal menarik data jadwal:", err);
         }
       }
 
@@ -442,13 +812,12 @@
           }
         });
 
-        let headHTML =
-          '<tr><th class="p-3 border-r border-blue-800 text-center w-48 py-4">WAKTU</th>';
+        let headHTML = `<tr><th style="width:145px">WAKTU</th>`;
         courts.forEach((court) => {
-          const shortCourt = court.replace("Lapangan Tennis ", "");
-          headHTML += `<th class="p-3 border-r border-blue-800 text-center py-4">${shortCourt}</th>`;
+          const short = court.replace("Lapangan Tennis ", "");
+          headHTML += `<th>${short}</th>`;
         });
-        headHTML += "</tr>";
+        headHTML += `</tr>`;
         document.getElementById(headId).innerHTML = headHTML;
 
         const bodyEl = document.getElementById(bodyId);
@@ -456,31 +825,24 @@
 
         jamArray.forEach((time) => {
           const tr = document.createElement("tr");
-          tr.className =
-            "border-b border-slate-200 transition-colors hover:bg-slate-100 h-full";
-
-          let rowHTML = `<td class="p-2 border-r border-slate-200 bg-white text-center font-bold text-slate-500">${time}</td>`;
+          let rowHTML = `<td class="td-time">${time}</td>`;
 
           courts.forEach((court) => {
-            const cellData = matrix[time][court];
-
+            const cell = matrix[time][court];
             if (
-              cellData &&
-              cellData["Status"] === "Terbooking" &&
-              cellData["Nama Pemesan"] !== "-"
+              cell &&
+              cell["Status"] === "Terbooking" &&
+              cell["Nama Pemesan"] !== "-"
             ) {
-              const nama = cellData["Nama Pemesan"];
-
+              const nama = cell["Nama Pemesan"];
               if (!pemesanColors[nama]) {
                 pemesanColors[nama] =
-                  colorPalette[colorIndex % colorPalette.length];
+                  bookingColors[colorIndex % bookingColors.length];
                 colorIndex++;
               }
-              const bgColor = pemesanColors[nama];
-
-              rowHTML += `<td class="p-2 border-r border-slate-200 ${bgColor} text-center font-bold text-white uppercase shadow-inner">${nama}</td>`;
+              rowHTML += `<td class="td-booked ${pemesanColors[nama]}">${nama}</td>`;
             } else {
-              rowHTML += `<td class="p-2 border-r border-slate-200 bg-transparent text-center text-slate-300 text-sm">Tersedia</td>`;
+              rowHTML += `<td class="td-available">Tersedia</td>`;
             }
           });
 
