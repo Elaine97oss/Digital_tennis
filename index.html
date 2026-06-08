@@ -1,303 +1,537 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
     <title>Digital Signage Lapangan Tennis Telkom</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'sporty-blue': '#1e3a8a', 
-                        'sporty-dark': '#0f172a',
-                        'sporty-light': '#3b82f6', 
-                        'tennis-green': '#10b981', 
-                        'tennis-ball': '#d9f99d',
-                        'gelora-navy': '#213659',
-                        'gelora-orange': '#f26925',
-                        'gelora-teal': '#3c93b6',
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden !important;
-            background-color: #1e3a8a; 
-            touch-action: none;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            position: absolute; 
-            top: 0; left: 0; right: 0; bottom: 0;
-        }
-        
-        .screen {
-            width: 100%;
-            height: 100%;
-            transition: opacity 1.5s ease-in-out;
-        }
+      :root {
+        --court-green:     #0a140f; 
+        --accent-gold:     #f5a623; 
+        --accent-gold-lt:  #ffd54f;
+        --tennis-ball:     #cfe04a;
+        --cream:           #ffffff; 
+        --dark:            #050a08; 
+        --text-muted:      rgba(255,255,255,0.6);
+        --color-pagi:      #f5a623;
+        --color-siang:     #2ecc8a;
+        --color-malam:     #00b4d8;
+      }
 
-        ::-webkit-scrollbar {
-            display: none;
-        }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .spin-slow {
-            animation: spin 30s linear infinite;
-        }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+      html, body {
+        width: 1920px; height: 1080px;   
+        overflow: hidden;
+        background: var(--dark);
+        touch-action: none;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        font-family: 'Barlow', Arial, sans-serif;
+        position: absolute; inset: 0;
+      }
+
+      ::-webkit-scrollbar { display: none; }
+
+      .screen {
+        width: 1920px; height: 1080px;
+        position: absolute; top: 0; left: 0;
+        opacity: 0;
+        z-index: 0;
+        -webkit-transition: opacity 1.2s ease;
+        transition: opacity 1.2s ease;
+      }
+      .screen.active { opacity: 1; z-index: 10; }
+
+      /* ── WELCOME SCREEN (SPASI & TIPOGRAFI DIPERBAIKI) ───────────── */
+      #screen-welcome {
+        background: var(--court-green);
+        display: -webkit-box; display: -webkit-flex; display: flex; 
+        -webkit-box-align: center; -webkit-align-items: center; align-items: center; 
+        -webkit-box-pack: center; -webkit-justify-content: center; justify-content: center;
+        overflow: hidden;
+      }
+
+      .court-texture {
+        position: absolute; top:0;left:0;right:0;bottom:0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='1' cy='1' r='0.5' fill='rgba(255,255,255,0.04)'/%3E%3Ccircle cx='3' cy='3' r='0.5' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+        z-index: 0; pointer-events: none;
+      }
+      .court-lines { position: absolute; top:0;left:0;right:0;bottom:0; z-index: 1; pointer-events: none; }
+      .court-lines svg { width: 1920px; height: 1080px; }
+      .court-overlay {
+        position: absolute; top:0;left:0;right:0;bottom:0; z-index: 2; pointer-events: none;
+        background: -webkit-radial-gradient(center, ellipse, rgba(20,43,32,0.3) 0%, rgba(5,10,8,0.85) 100%);
+        background: radial-gradient(ellipse at center, rgba(20,43,32,0.3) 0%, rgba(5,10,8,0.85) 100%);
+      }
+
+      .ball-float {
+        position: absolute; border-radius: 50%;
+        background: -webkit-radial-gradient(35% 35%, circle, #cfe04a, #a0b830);
+        background: radial-gradient(circle at 35% 35%, #cfe04a, #a0b830);
+        -webkit-transform: translateZ(0); transform: translateZ(0);
+        -webkit-animation: floatBall 8s ease-in-out infinite;
+        animation: floatBall 8s ease-in-out infinite;
+        z-index: 3; pointer-events: none;
+      }
+      .ball-float::before {
+        content: ''; position: absolute; top:0;left:0;right:0;bottom:0; border-radius: 50%;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M2 50 Q25 15 50 50 Q75 85 98 50' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2.5'/%3E%3Cpath d='M2 50 Q25 85 50 50 Q75 15 98 50' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2.5'/%3E%3C/svg%3E") center/contain no-repeat;
+      }
+      /* Posisi bola digeser sedikit menjauh dari tengah agar tidak menabrak kartu */
+      .ball-a { width:300px;height:300px; bottom:-60px; right:-2%; opacity:.15; -webkit-animation-duration:20s; animation-duration:20s; }
+      .ball-b { width:70px; height:70px;  top:12%; left:4%;  opacity:.55; -webkit-animation-duration:11s; animation-duration:11s; -webkit-animation-delay:-3s; animation-delay:-3s; }
+      .ball-c { width:44px; height:44px;  top:8%; right:12%; opacity:.4;  -webkit-animation-duration:14s; animation-duration:14s; -webkit-animation-delay:-7s; animation-delay:-7s; }
+
+      @-webkit-keyframes floatBall {
+        0%,100% { -webkit-transform:translateY(0) rotate(0deg) translateZ(0); }
+        25%      { -webkit-transform:translateY(-22px) rotate(45deg) translateZ(0); }
+        75%      { -webkit-transform:translateY(10px) rotate(-30deg) translateZ(0); }
+      }
+      @keyframes floatBall {
+        0%,100% { transform:translateY(0) rotate(0deg) translateZ(0); }
+        25%      { transform:translateY(-22px) rotate(45deg) translateZ(0); }
+        75%      { transform:translateY(10px) rotate(-30deg) translateZ(0); }
+      }
+
+      .welcome-content {
+        position: relative; z-index: 10; width: 1400px;
+        display: -webkit-box; display: -webkit-flex; display: flex; 
+        -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; flex-direction: column; 
+        gap: 80px; /* Jarak antar blok utama diperbesar drastis */
+        -webkit-box-align: center; -webkit-align-items: center; align-items: center;
+      }
+
+      .welcome-badge {
+        display: -webkit-box; display: -webkit-flex; display: flex; 
+        -webkit-box-align: center; -webkit-align-items: center; align-items: center; gap: 16px;
+        background: rgba(245,166,35,0.15); border: 3px solid var(--accent-gold); 
+        padding: 16px 36px; border-radius: 50px;
+      }
+      .badge-dot {
+        width: 14px; height: 14px; border-radius: 50%; background: var(--accent-gold); 
+        -webkit-animation: pulse 2s infinite; animation: pulse 2s infinite;
+      }
+      @-webkit-keyframes pulse { 0%,100%{opacity:1;-webkit-transform:scale(1);} 50%{opacity:.5;-webkit-transform:scale(1.5);} }
+      @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(1.5);} }
+      
+      .welcome-badge span {
+        font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 26px;
+        letter-spacing: 0.28em; /* Spasi antar huruf dilebarkan */
+        color: var(--accent-gold); text-transform: uppercase;
+      }
+
+      .welcome-hero { text-align: center; }
+      .welcome-subtitle {
+        font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 34px;
+        color: var(--accent-gold-lt); 
+        letter-spacing: 0.45em; /* Spasi antar huruf dilebarkan drastis */
+        text-transform: uppercase; 
+        margin-bottom: 24px; /* Jarak dengan Judul Utama diperbesar */
+      }
+      .welcome-title {
+        font-family: 'Bebas Neue', Impact, sans-serif; 
+        font-size: 130px; /* Ukuran disesuaikan sedikit agar baris bernapas */
+        line-height: 1.15; /* SANGAT PENTING: Membuat jarak antar baris atas dan bawah menjadi lega */
+        color: var(--cream); 
+        letter-spacing: 0.08em; /* Bebas Neue butuh letter spacing ekstra */
+        text-shadow: 0 10px 0px rgba(0,0,0,0.8); 
+      }
+      .welcome-title .highlight { 
+        color: var(--tennis-ball); display: block; 
+        margin-top: 15px; /* Jarak ekstra khusus teks Telkom Makassar */
+      }
+      .welcome-divider {
+        width: 250px; height: 5px; 
+        background: -webkit-linear-gradient(left, transparent, var(--accent-gold), transparent);
+        background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        margin: 50px auto 0; /* Jarak garis ke judul diperbesar */
+      }
+
+      .booking-card {
+        background: rgba(13,26,20,0.95); border: 4px solid var(--accent-gold); 
+        border-radius: 0; 
+        padding: 60px 50px; /* Padding atas dan bawah ditingkatkan */
+        width: 100%; 
+        box-shadow: 15px 15px 0px rgba(0,0,0,0.7); 
+      }
+      .booking-label {
+        font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 26px;
+        letter-spacing: 0.35em; /* Dilebarkan */
+        color: var(--text-muted); text-transform: uppercase; text-align: center; 
+        margin-bottom: 25px; /* Jarak ke deskripsi dilebarkan */
+      }
+      .booking-desc {
+        font-weight: 700; font-size: 34px; color: var(--cream); text-align: center; 
+        line-height: 1.5; /* Jarak antar baris teks deskripsi dibuat lebih nyaman */
+        margin-bottom: 50px; /* Jarak dengan tombol/channel diperbesar */
+      }
+      .booking-channels { 
+        display: -webkit-box; display: -webkit-flex; display: flex; 
+        gap: 40px; /* Jarak antar pill channel dilebarkan */
+        -webkit-box-pack: center; -webkit-justify-content: center; justify-content: center; 
+      }
+      .channel-pill {
+        display: -webkit-box; display: -webkit-flex; display: flex; 
+        -webkit-box-align: center; -webkit-align-items: center; align-items: center; gap: 28px;
+        background: #152920; border: 3px solid #2ecc8a; border-radius: 0; padding: 25px 40px; width: 550px;
+      }
+      .channel-tag {
+        font-family: 'Bebas Neue', Impact, sans-serif; font-size: 28px; letter-spacing: 0.15em;
+        padding: 12px 24px; flex-shrink: 0;
+      }
+      .tag-web { background: var(--accent-gold); color: var(--dark); }
+      .tag-app { background: #2ecc8a; color: var(--dark); }
+      .channel-name { 
+        font-family: 'Bebas Neue', Impact, sans-serif; font-size: 52px; color: var(--cream); 
+        letter-spacing: 0.08em; 
+        line-height: 1.1; 
+      }
+      .channel-name small {
+        display: block; font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700;
+        letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase; 
+        margin-top: 12px; /* Spasi antara nama channel dan deskripsi kecilnya */
+      }
+
+      /* ── SCHEDULE SLIDES ────────────────────────────── */
+      .screen-jadwal {
+        background: var(--dark);
+        display: -webkit-box; display: -webkit-flex; display: flex; 
+        -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; flex-direction: column; 
+        padding: 40px 50px; overflow: hidden;
+      }
+
+      .jadwal-header {
+        display: -webkit-box; display: -webkit-flex; display: flex; 
+        -webkit-box-pack: justify; -webkit-justify-content: space-between; justify-content: space-between; 
+        -webkit-box-align: center; -webkit-align-items: center; align-items: center; 
+        margin-bottom: 30px; flex-shrink: 0;
+      }
+      .jadwal-eyebrow {
+        font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 28px;
+        letter-spacing: 0.35em; color: var(--accent-gold); text-transform: uppercase; 
+        display: -webkit-box; display: -webkit-flex; display: flex; 
+        -webkit-box-align: center; -webkit-align-items: center; align-items: center; gap: 12px;
+      }
+      .jadwal-eyebrow::before { content: ''; display: inline-block; width: 36px; height: 5px; background: var(--accent-gold); }
+      .jadwal-title {
+        font-family: 'Bebas Neue', Impact, sans-serif; font-size: 96px; color: var(--cream);
+        letter-spacing: 0.05em; line-height: 1; margin-top: 10px;
+      }
+      
+      .sesi-tag {
+        font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 38px;
+        letter-spacing: 0.12em; vertical-align: middle; padding: 8px 24px; border-radius: 0; margin-left: 24px;
+      }
+      .sesi-pagi { background: rgba(245,166,35,0.15); color: var(--color-pagi); border: 4px solid var(--color-pagi); }
+      .sesi-siang { background: rgba(46,204,138,0.15); color: var(--color-siang); border: 4px solid var(--color-siang); }
+      .sesi-malam { background: rgba(0,180,216,0.15); color: var(--color-malam); border: 4px solid var(--color-malam); }
+
+      .jadwal-date-badge {
+        font-family: 'Bebas Neue', sans-serif; font-size: 52px; letter-spacing: 0.08em; color: var(--dark);
+        background: var(--accent-gold); padding: 16px 36px; border-radius: 0;
+        text-transform: uppercase; white-space: nowrap; box-shadow: 10px 10px 0px rgba(0,0,0,0.8);
+      }
+      
+      .header-divider { width: 100%; height: 6px; flex-shrink: 0; background: var(--accent-gold); margin-bottom: 0; }
+
+      .table-wrap {
+        -webkit-box-flex: 1; -webkit-flex: 1; flex: 1; 
+        border: 4px solid var(--accent-gold); border-top: none;
+        display: -webkit-box; display: -webkit-flex; display: flex; 
+        -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; flex-direction: column; 
+        background: #0a0a0a;
+      }
+
+      table.jadwal-table { width: 100%; height: 100%; border-collapse: collapse; table-layout: fixed; }
+      table.jadwal-table thead { background: #111; border-bottom: 6px solid var(--accent-gold); }
+      table.jadwal-table thead th {
+        padding: 30px 15px; font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 900; font-size: 46px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); text-align: center; border-right: 4px solid #222;
+      }
+      table.jadwal-table thead th:first-child { color: var(--accent-gold); width: 350px; }
+      
+      table.jadwal-table tbody tr { border-bottom: 4px solid #1a1a1a; height: 33.33%; }
+      table.jadwal-table tbody tr:nth-child(even) { background: #0f0f0f; }
+      
+      table.jadwal-table tbody td {
+        padding: 20px; border-right: 4px solid #1a1a1a; text-align: center; vertical-align: middle; 
+      }
+
+      .td-time {
+        font-family: 'Bebas Neue', Impact, sans-serif !important; 
+        font-size: 90px !important; 
+        letter-spacing: 0.08em; color: var(--accent-gold) !important; background: #000 !important;
+      }
+      
+      .td-available {
+        color: #2ecc8a !important; font-family: 'Bebas Neue', Impact, sans-serif !important;
+        font-size: 75px !important; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.9;
+      }
+      
+      .td-booked {
+        font-family: 'Bebas Neue', Impact, sans-serif !important; 
+        font-size: 80px !important; 
+        text-transform: uppercase; letter-spacing: 0.06em; color: #fff !important; line-height: 1.1;
+      }
+      
+      .bk-0 { background: #005f73 !important; }
+      .bk-1 { background: #9b2226 !important; }
+      .bk-2 { background: #ca6702 !important; }
+      .bk-3 { background: #0a9396 !important; }
+      .bk-4 { background: #ae2012 !important; }
+      .bk-5 { background: #4a4e69 !important; }
     </style>
-</head>
-<body class="text-slate-800">
+  </head>
+  <body>
 
-    <!-- SLIDE 0: Layar Selamat Datang -->
-    <div id="screen-welcome" class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-100 z-10 bg-sporty-blue overflow-hidden w-full h-full">
-        
-        <div class="absolute inset-0 z-0 opacity-20 pointer-events-none flex flex-col items-center justify-center w-full h-full">
-            <div class="w-full h-full border-[16px] border-white max-w-[90%] max-h-[95%] absolute"></div>
-            <div class="w-full h-2 bg-white absolute top-1/2 transform -translate-y-1/2 max-w-[90%]"></div>
-            <div class="h-full w-2 bg-white absolute left-1/2 transform -translate-x-1/2 max-h-[95%]"></div>
-            <div class="w-full h-full border-x-[16px] border-white max-w-[60%] max-h-[95%] absolute"></div>
-        </div>
-
-        <svg class="absolute -bottom-32 -right-20 w-[450px] h-[450px] text-tennis-ball opacity-80 spin-slow drop-shadow-2xl" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM12 20.5C10.5 15 6.5 11 2.5 10.5C3.5 6 7 2.5 11.5 2.5C12 7.5 16.5 11.5 21.5 12C20.5 17 17 20 12 20.5Z" stroke="white" stroke-width="0.2"/>
+    <div id="screen-welcome" class="screen active">
+      <div class="court-texture"></div>
+      <div class="court-lines">
+        <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+          <rect x="80"  y="60"  width="1760" height="960" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
+          <line x1="960"  y1="60"   x2="960"  y2="1020" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+          <line x1="80"   y1="540"  x2="1840" y2="540"  stroke="rgba(255,255,255,0.06)" stroke-width="3"/>
         </svg>
+      </div>
+      <div class="court-overlay"></div>
+      <div class="ball-float ball-a"></div>
+      <div class="ball-float ball-b"></div>
+      <div class="ball-float ball-c"></div>
 
-        <div class="relative z-10 flex flex-col items-center text-center w-[95%] max-w-[1400px]">
-            
-            <div class="mb-8 backdrop-blur-sm bg-sporty-dark/40 px-10 py-8 rounded-3xl border border-white/10 shadow-2xl w-full">
-                <p class="text-2xl md:text-3xl lg:text-4xl font-bold text-tennis-ball mb-2 tracking-widest uppercase">Selamat Datang di</p>
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white drop-shadow-lg leading-tight">
-                    Lapangan Tennis Indoor<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-tennis-ball to-tennis-green">Telkom Makassar</span>
-                </h1>
-            </div>
-            
-            <div class="bg-white rounded-[2rem] shadow-2xl p-8 w-full flex flex-col items-center justify-center border-b-[12px] border-tennis-green">
-                <h3 class="text-xl lg:text-2xl font-black text-slate-400 uppercase tracking-widest mb-2">Informasi Booking</h3>
-                <p class="text-3xl lg:text-4xl font-bold text-sporty-dark mb-8 leading-snug">Untuk pemesanan lapangan, silakan melalui:</p>
-                
-                <div class="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-5xl">
-                    <div class="flex flex-1 items-center justify-center space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-200">
-                        <span class="bg-gelora-orange text-white px-5 py-2 rounded-xl font-black text-2xl shadow-md">WEB</span>
-                        <p class="text-4xl font-black text-gelora-navy underline decoration-gelora-orange decoration-4">gelora.id</p>
-                    </div>
-
-                    <div class="flex flex-1 items-center justify-center space-x-4 bg-slate-50 p-6 rounded-2xl border border-slate-200 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 bottom-0 w-32 bg-gelora-teal opacity-10 skew-x-12 transform origin-bottom"></div>
-                        <span class="bg-gelora-teal text-white px-5 py-2 rounded-xl font-black text-2xl shadow-md z-10">APP</span>
-                        <div class="z-10 text-left">
-                            <p class="text-3xl font-bold text-slate-700">Aplikasi <span class="text-gelora-navy font-black text-4xl">GELORA</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <p class="text-lg font-bold text-slate-400 mt-6 tracking-widest uppercase">Dapat di-download di PlayStore & AppStore</p>
-            </div>
+      <div class="welcome-content">
+        <div class="welcome-badge">
+          <div class="badge-dot"></div>
+          <span>Indoor Tennis Court &bull; Telkom Regional 5 &bull; Telkom Property 5 KTI</span>
         </div>
+        <div class="welcome-hero">
+          <p class="welcome-subtitle">Selamat Datang di</p>
+          <h1 class="welcome-title">Lapangan Tennis Indoor<span class="highlight">Telkom Makassar</span></h1>
+          <div class="welcome-divider"></div>
+        </div>
+        <div class="booking-card">
+          <p class="booking-label">&#9679;&nbsp; Informasi Pemesanan Lapangan</p>
+          <p class="booking-desc">Untuk reservasi lapangan, silakan lakukan pemesanan melalui:</p>
+          <div class="booking-channels">
+            <div class="channel-pill">
+              <span class="channel-tag tag-web">WEB</span>
+              <div class="channel-name">gelora.id<small>Website Resmi</small></div>
+            </div>
+            <div class="channel-pill">
+              <span class="channel-tag tag-app">APP</span>
+              <div class="channel-name">Aplikasi GELORA<small>PlayStore &amp; AppStore</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- SLIDE 1: Jadwal Sesi 1 -->
-    <div id="screen-jadwal-1" class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-0 z-0 bg-slate-100 w-full h-full">
-        <div class="bg-white shadow-2xl rounded-3xl p-6 md:p-8 w-full h-full flex flex-col border border-slate-200">
-            <div class="mb-4 flex justify-between items-end border-b-4 border-slate-100 pb-3">
-                <div>
-                    <h2 class="text-4xl md:text-5xl font-black text-sporty-blue tracking-tight">
-                        Jadwal Lapangan <span class="text-2xl md:text-3xl text-sporty-light ml-2 bg-blue-50 px-4 py-1 rounded-lg">SESI PAGI - SIANG</span>
-                    </h2>
-                    <p class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest">Indoor Tennis TELKOM</p>
-                </div>
-                <div class="bg-tennis-green text-white px-6 py-2 rounded-xl shadow-md text-2xl font-bold current-date-display">
-                    Memuat...
-                </div>
-            </div>
-            <div class="overflow-hidden flex-grow rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-                <!-- Perbaikan: Menambahkan table-fixed dan membiarkan tabel membagi tinggi sendiri -->
-                <table class="w-full h-full text-left border-collapse text-xl table-fixed">
-                    <thead id="jadwal-head-1" class="bg-sporty-blue text-white text-center uppercase tracking-wider text-sm md:text-lg"></thead>
-                    <tbody id="jadwal-body-1" class="text-lg md:text-xl font-semibold bg-slate-50"></tbody>
-                </table>
-            </div>
-        </div>
+    <div id="screen-jadwal-1" class="screen screen-jadwal">
+      <div class="jadwal-header">
+        <div><span class="jadwal-eyebrow">Indoor Tennis &bull; Telkom Makassar</span>
+        <h2 class="jadwal-title">Jadwal Lapangan <span class="sesi-tag sesi-pagi">06:00 - 09:00</span></h2></div>
+        <div class="jadwal-date-badge current-date-display">MEMUAT...</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="table-wrap"><table class="jadwal-table"><thead id="jadwal-head-1"></thead><tbody id="jadwal-body-1"></tbody></table></div>
     </div>
 
-    <!-- SLIDE 2: Jadwal Sesi 2 -->
-    <div id="screen-jadwal-2" class="screen absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 opacity-0 z-0 bg-slate-100 w-full h-full">
-        <div class="bg-white shadow-2xl rounded-3xl p-6 md:p-8 w-full h-full flex flex-col border border-slate-200">
-            <div class="mb-4 flex justify-between items-end border-b-4 border-slate-100 pb-3">
-                <div>
-                    <h2 class="text-4xl md:text-5xl font-black text-sporty-blue tracking-tight">
-                        Jadwal Lapangan <span class="text-2xl md:text-3xl text-indigo-500 ml-2 bg-indigo-50 px-4 py-1 rounded-lg">SESI SORE - MALAM</span>
-                    </h2>
-                    <p class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest">Indoor Tennis TELKOM</p>
-                </div>
-                <div class="bg-tennis-green text-white px-6 py-2 rounded-xl shadow-md text-2xl font-bold current-date-display">
-                    Memuat...
-                </div>
-            </div>
-            <div class="overflow-hidden flex-grow rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-                <!-- Perbaikan: Menambahkan table-fixed dan membiarkan tabel membagi tinggi sendiri -->
-                <table class="w-full h-full text-left border-collapse text-xl table-fixed">
-                    <thead id="jadwal-head-2" class="bg-sporty-blue text-white text-center uppercase tracking-wider text-sm md:text-lg"></thead>
-                    <tbody id="jadwal-body-2" class="text-lg md:text-xl font-semibold bg-slate-50"></tbody>
-                </table>
-            </div>
-        </div>
+    <div id="screen-jadwal-2" class="screen screen-jadwal">
+      <div class="jadwal-header">
+        <div><span class="jadwal-eyebrow">Indoor Tennis &bull; Telkom Makassar</span>
+        <h2 class="jadwal-title">Jadwal Lapangan <span class="sesi-tag sesi-pagi">09:00 - 12:00</span></h2></div>
+        <div class="jadwal-date-badge current-date-display">MEMUAT...</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="table-wrap"><table class="jadwal-table"><thead id="jadwal-head-2"></thead><tbody id="jadwal-body-2"></tbody></table></div>
+    </div>
+
+    <div id="screen-jadwal-3" class="screen screen-jadwal">
+      <div class="jadwal-header">
+        <div><span class="jadwal-eyebrow">Indoor Tennis &bull; Telkom Makassar</span>
+        <h2 class="jadwal-title">Jadwal Lapangan <span class="sesi-tag sesi-siang">12:00 - 15:00</span></h2></div>
+        <div class="jadwal-date-badge current-date-display">MEMUAT...</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="table-wrap"><table class="jadwal-table"><thead id="jadwal-head-3"></thead><tbody id="jadwal-body-3"></tbody></table></div>
+    </div>
+
+    <div id="screen-jadwal-4" class="screen screen-jadwal">
+      <div class="jadwal-header">
+        <div><span class="jadwal-eyebrow">Indoor Tennis &bull; Telkom Makassar</span>
+        <h2 class="jadwal-title">Jadwal Lapangan <span class="sesi-tag sesi-siang">15:00 - 18:00</span></h2></div>
+        <div class="jadwal-date-badge current-date-display">MEMUAT...</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="table-wrap"><table class="jadwal-table"><thead id="jadwal-head-4"></thead><tbody id="jadwal-body-4"></tbody></table></div>
+    </div>
+
+    <div id="screen-jadwal-5" class="screen screen-jadwal">
+      <div class="jadwal-header">
+        <div><span class="jadwal-eyebrow">Indoor Tennis &bull; Telkom Makassar</span>
+        <h2 class="jadwal-title">Jadwal Lapangan <span class="sesi-tag sesi-malam">18:00 - 21:00</span></h2></div>
+        <div class="jadwal-date-badge current-date-display">MEMUAT...</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="table-wrap"><table class="jadwal-table"><thead id="jadwal-head-5"></thead><tbody id="jadwal-body-5"></tbody></table></div>
+    </div>
+
+    <div id="screen-jadwal-6" class="screen screen-jadwal">
+      <div class="jadwal-header">
+        <div><span class="jadwal-eyebrow">Indoor Tennis &bull; Telkom Makassar</span>
+        <h2 class="jadwal-title">Jadwal Lapangan <span class="sesi-tag sesi-malam">21:00 - 23:00</span></h2></div>
+        <div class="jadwal-date-badge current-date-display">MEMUAT...</div>
+      </div>
+      <div class="header-divider"></div>
+      <div class="table-wrap"><table class="jadwal-table"><thead id="jadwal-head-6"></thead><tbody id="jadwal-body-6"></tbody></table></div>
     </div>
 
     <script>
-        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzpTVIM5S8FP38lpFUF4MO_Kbhc08jHxNdnGkULvEVmd0WUdNQFQTV3GY330cBJOiri/exec";
-        
-        let currentScreenIndex = 0;
-        const screens = [
-            document.getElementById('screen-welcome'),
-            document.getElementById('screen-jadwal-1'),
-            document.getElementById('screen-jadwal-2')
-        ];
+      var GAS_API_URL = "https://script.google.com/macros/s/AKfycbzpTVIM5S8FP38lpFUF4MO_Kbhc08jHxNdnGkULvEVmd0WUdNQFQTV3GY330cBJOiri/exec";
 
-        const jamSesi1 = [
-            "06:00 - 07:00", "07:00 - 08:00", "08:00 - 09:00", "09:00 - 10:00",
-            "10:00 - 11:00", "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00",
-            "14:00 - 15:00"
-        ];
-        const jamSesi2 = [
-            "15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00", "18:00 - 19:00", 
-            "19:00 - 20:00", "20:00 - 21:00", "21:00 - 22:00", "22:00 - 23:00"
-        ];
+      var currentScreenIndex = 0;
+      var screens = [
+        document.getElementById("screen-welcome"),
+        document.getElementById("screen-jadwal-1"),
+        document.getElementById("screen-jadwal-2"),
+        document.getElementById("screen-jadwal-3"),
+        document.getElementById("screen-jadwal-4"),
+        document.getElementById("screen-jadwal-5"),
+        document.getElementById("screen-jadwal-6")
+      ];
 
-        const colorPalette = ['bg-sporty-light', 'bg-tennis-green', 'bg-teal-500', 'bg-indigo-500', 'bg-orange-500', 'bg-rose-500'];
-        let pemesanColors = {};
-        let colorIndex = 0;
+      var jamSesi1 = ["06:00 - 07:00", "07:00 - 08:00", "08:00 - 09:00"];
+      var jamSesi2 = ["09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00"];
+      var jamSesi3 = ["12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00"];
+      var jamSesi4 = ["15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00"];
+      var jamSesi5 = ["18:00 - 19:00", "19:00 - 20:00", "20:00 - 21:00"];
+      var jamSesi6 = ["21:00 - 22:00", "22:00 - 23:00"];
 
-        document.body.addEventListener('dblclick', function() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        });
+      var bookingColors = ["bk-0","bk-1","bk-2","bk-3","bk-4","bk-5"];
+      var pemesanColors = {};
+      var colorIndex = 0;
 
-        function updateDateHeader() {
-            const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
-            const dateText = new Date().toLocaleDateString('en-GB', options);
-            document.querySelectorAll('.current-date-display').forEach(el => el.innerText = dateText);
+      function updateDateHeader() {
+        var opts = { weekday:"long", day:"2-digit", month:"long", year:"numeric" };
+        var dateText = new Date().toLocaleDateString("id-ID", opts);
+        var els = document.querySelectorAll(".current-date-display");
+        for (var i = 0; i < els.length; i++) { els[i].innerText = dateText; }
+      }
+
+      function rotateScreens() {
+        for (var i = 0; i < screens.length; i++) {
+          screens[i].classList.remove("active");
         }
+        currentScreenIndex = (currentScreenIndex + 1) % screens.length;
+        screens[currentScreenIndex].classList.add("active");
+      }
 
-        function rotateScreens() {
-            screens.forEach(screen => {
-                screen.classList.replace('opacity-100', 'opacity-0');
-                screen.classList.replace('z-10', 'z-0');
-            });
-            currentScreenIndex = (currentScreenIndex + 1) % screens.length;
-            screens[currentScreenIndex].classList.replace('opacity-0', 'opacity-100');
-            screens[currentScreenIndex].classList.replace('z-0', 'z-10');
-        }
-
-        async function fetchJadwal() {
+      function fetchJadwal() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", GAS_API_URL, true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
             try {
-                const response = await fetch(GAS_API_URL);
-                const data = await response.json();
-                
-                const today = new Date();
-                const yyyy = today.getFullYear();
-                const mm = String(today.getMonth() + 1).padStart(2, '0');
-                const dd = String(today.getDate()).padStart(2, '0');
-                const dateString = `${yyyy}-${mm}-${dd}`; 
-                
-                const filteredData = data.filter(item => {
-                    if (!item['Tanggal']) return true; 
-                    return String(item['Tanggal']).substring(0, 10) === dateString;
-                });
+              var data = JSON.parse(xhr.responseText);
+              var today = new Date();
+              var yyyy  = today.getFullYear();
+              var mm    = String(today.getMonth() + 1);
+              var dd    = String(today.getDate());
+              
+              if (mm.length < 2) mm = "0" + mm;
+              if (dd.length < 2) dd = "0" + dd;
+              var dateString = yyyy + "-" + mm + "-" + dd;
 
-                let courts = [...new Set(data.map(item => item['Nama Lapangan']))].filter(Boolean);
-                if (courts.length === 0) {
-                    courts = ["Lapangan Tennis Indoor 1", "Lapangan Tennis Indoor 2", "Lapangan Tennis Indoor 3", "Lapangan Tennis Indoor 4"];
+              var filteredData = [];
+              for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                if (!item["Tanggal"] || String(item["Tanggal"]).substring(0, 10) === dateString) {
+                  filteredData.push(item);
                 }
+              }
 
-                renderMatrixTable(filteredData, courts, jamSesi1, 'jadwal-head-1', 'jadwal-body-1');
-                renderMatrixTable(filteredData, courts, jamSesi2, 'jadwal-head-2', 'jadwal-body-2');
-                
-            } catch (error) {
-                console.error('Gagal menarik data jadwal:', error);
+              var courtsSet = {};
+              var courts = [];
+              for (var i = 0; i < data.length; i++) {
+                var n = data[i]["Nama Lapangan"];
+                if (n && !courtsSet[n]) { courtsSet[n] = true; courts.push(n); }
+              }
+              if (courts.length === 0) {
+                courts = [
+                  "Lapangan Tennis Indoor 1","Lapangan Tennis Indoor 2",
+                  "Lapangan Tennis Indoor 3","Lapangan Tennis Indoor 4"
+                ];
+              }
+
+              renderMatrixTable(filteredData, courts, jamSesi1, "jadwal-head-1", "jadwal-body-1");
+              renderMatrixTable(filteredData, courts, jamSesi2, "jadwal-head-2", "jadwal-body-2");
+              renderMatrixTable(filteredData, courts, jamSesi3, "jadwal-head-3", "jadwal-body-3");
+              renderMatrixTable(filteredData, courts, jamSesi4, "jadwal-head-4", "jadwal-body-4");
+              renderMatrixTable(filteredData, courts, jamSesi5, "jadwal-head-5", "jadwal-body-5");
+              renderMatrixTable(filteredData, courts, jamSesi6, "jadwal-head-6", "jadwal-body-6");
+            } catch(e) { console.error("Parse error:", e); }
+          }
+        };
+        xhr.send();
+      }
+
+      function renderMatrixTable(filteredData, courts, jamArray, headId, bodyId) {
+        var matrix = {};
+        for (var i = 0; i < jamArray.length; i++) {
+          matrix[jamArray[i]] = {};
+          for (var j = 0; j < courts.length; j++) matrix[jamArray[i]][courts[j]] = null;
+        }
+        for (var i = 0; i < filteredData.length; i++) {
+          var item = filteredData[i];
+          if (matrix[item["Waktu"]] && matrix[item["Waktu"]][item["Nama Lapangan"]] !== undefined) {
+            matrix[item["Waktu"]][item["Nama Lapangan"]] = item;
+          }
+        }
+
+        var headHTML = "<tr><th style='width:350px'>WAKTU</th>";
+        for (var j = 0; j < courts.length; j++) {
+          var short = courts[j].replace("Lapangan Tennis ", "");
+          headHTML += "<th>" + short + "</th>";
+        }
+        headHTML += "</tr>";
+        document.getElementById(headId).innerHTML = headHTML;
+
+        var bodyEl = document.getElementById(bodyId);
+        bodyEl.innerHTML = "";
+
+        for (var i = 0; i < jamArray.length; i++) {
+          var time = jamArray[i];
+          var tr = document.createElement("tr");
+          var rowHTML = "<td class='td-time'>" + time + "</td>";
+
+          for (var j = 0; j < courts.length; j++) {
+            var cell = matrix[time][courts[j]];
+            if (cell && cell["Status"] === "Terbooking" && cell["Nama Pemesan"] !== "-") {
+              var nama = cell["Nama Pemesan"];
+              if (!pemesanColors[nama]) {
+                pemesanColors[nama] = bookingColors[colorIndex % bookingColors.length];
+                colorIndex++;
+              }
+              rowHTML += "<td class='td-booked " + pemesanColors[nama] + "'>" + nama + "</td>";
+            } else {
+              rowHTML += "<td class='td-available'>TERSEDIA</td>";
             }
+          }
+
+          tr.innerHTML = rowHTML;
+          bodyEl.appendChild(tr);
         }
+      }
 
-        function renderMatrixTable(filteredData, courts, jamArray, headId, bodyId) {
-            const matrix = {};
-            jamArray.forEach(t => {
-                matrix[t] = {};
-                courts.forEach(c => matrix[t][c] = null);
-            });
+      updateDateHeader();
+      fetchJadwal();
 
-            filteredData.forEach(item => {
-                if(matrix[item['Waktu']] && matrix[item['Waktu']][item['Nama Lapangan']] !== undefined) {
-                    matrix[item['Waktu']][item['Nama Lapangan']] = item;
-                }
-            });
-
-            let headHTML = '<tr><th class="p-3 border-r border-blue-800 text-center w-32 md:w-48 py-4">WAKTU</th>';
-            courts.forEach(court => {
-                const shortCourt = court.replace('Lapangan Tennis ', '');
-                headHTML += `<th class="p-3 border-r border-blue-800 text-center py-4">${shortCourt}</th>`;
-            });
-            headHTML += '</tr>';
-            document.getElementById(headId).innerHTML = headHTML;
-
-            const bodyEl = document.getElementById(bodyId);
-            bodyEl.innerHTML = '';
-
-            jamArray.forEach(time => {
-                const tr = document.createElement('tr');
-                // Perbaikan: Class h-full dihapus dari sini agar tinggi baris terbagi rata
-                tr.className = 'border-b border-slate-200 transition-colors hover:bg-slate-100';
-
-                let rowHTML = `<td class="p-2 md:p-3 border-r border-slate-200 bg-white text-center font-bold text-slate-500">${time}</td>`;
-
-                courts.forEach(court => {
-                    const cellData = matrix[time][court];
-                    
-                    if (cellData && cellData['Status'] === 'Terbooking' && cellData['Nama Pemesan'] !== '-') {
-                        const nama = cellData['Nama Pemesan'];
-                        
-                        if(!pemesanColors[nama]) {
-                            pemesanColors[nama] = colorPalette[colorIndex % colorPalette.length];
-                            colorIndex++;
-                        }
-                        const bgColor = pemesanColors[nama];
-
-                        rowHTML += `<td class="p-2 md:p-3 border-r border-slate-200 ${bgColor} text-center font-bold text-white uppercase shadow-inner">${nama}</td>`;
-                    } else {
-                        rowHTML += `<td class="p-2 md:p-3 border-r border-slate-200 bg-transparent text-center text-slate-300 text-sm">Tersedia</td>`;
-                    }
-                });
-
-                tr.innerHTML = rowHTML;
-                bodyEl.appendChild(tr);
-            });
-        }
-
-        updateDateHeader();
-        fetchJadwal();
-        
-        setInterval(rotateScreens, 12000); 
-        setInterval(fetchJadwal, 300000);  
+      setInterval(rotateScreens, 12000);
+      setInterval(fetchJadwal, 300000);
+      setInterval(function() { window.location.reload(); }, 900000); 
     </script>
-</body>
+  </body>
 </html>
